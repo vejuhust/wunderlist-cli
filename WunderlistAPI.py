@@ -31,6 +31,7 @@ class WunderlistAPI():
         }
         self.tokenfile_name = "token.json"
         self.apiurl_profile = "https://api.wunderlist.com/me"
+        self.apiurl_setting = "https://api.wunderlist.com/me/settings"
 
 
     # Save token in a file
@@ -111,6 +112,13 @@ class WunderlistAPI():
         return self.wunderlist_api_call(self.apiurl_profile, headers)
 
 
+    # Get User Settings via https://api.wunderlist.com/me/settings
+    def get_setting(self):
+        self.login()
+        headers = { 'Authorization' : self.token }
+        return self.wunderlist_api_call(self.apiurl_setting, headers)
+
+
 
 
 if __name__ == '__main__':
@@ -118,5 +126,6 @@ if __name__ == '__main__':
     print api.is_login, api.token
     api.login()
     print api.is_login, api.token
-    print json.dumps(api.get_profile(), sort_keys = True, indent = 4)
+    print json.dumps(api.get_profile(), indent = 4)
+    print json.dumps(api.get_setting(), indent = 4)
 
