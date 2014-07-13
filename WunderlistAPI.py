@@ -41,6 +41,7 @@ class WunderlistAPI():
         self.apiurl_shares = "https://api.wunderlist.com/me/shares"
         self.apiurl_reminders = "https://api.wunderlist.com/me/reminders"
         self.apiurl_lists = "https://api.wunderlist.com/me/lists"
+        self.apiurl_tasks = "https://api.wunderlist.com/me/tasks"
 
 
     # Save token in a file
@@ -168,6 +169,13 @@ class WunderlistAPI():
         return sorted(lists, key = itemgetter('position'), reverse = False)
 
 
+    # Get user's all tasks sorted by list_id, completed, position via https://api.wunderlist.com/me/tasks
+    def get_tasks(self):
+        lists = self.wunderlist_api_call_read(self.apiurl_tasks)
+        return sorted(lists, key = itemgetter('list_id', 'completed_at', 'position'), reverse = False)
+
+
+
 
 if __name__ == '__main__':
     api = WunderlistAPI(email, password)
@@ -183,4 +191,5 @@ if __name__ == '__main__':
     print "get_shares", json.dumps(api.get_shares(), indent = 4)
     print "get_reminders", json.dumps(api.get_reminders(), indent = 4)
     print "get_lists", json.dumps(api.get_lists(), indent = 4)
+    print "get_tasks", json.dumps(api.get_tasks(), indent = 4)
 
