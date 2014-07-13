@@ -31,7 +31,8 @@ class WunderlistAPI():
         }
         self.tokenfile_name = "token.json"
         self.apiurl_profile = "https://api.wunderlist.com/me"
-        self.apiurl_setting = "https://api.wunderlist.com/me/settings"
+        self.apiurl_settings = "https://api.wunderlist.com/me/settings"
+        self.apiurl_contacts = "https://api.wunderlist.com/me/contacts"
 
 
     # Save token in a file
@@ -105,18 +106,25 @@ class WunderlistAPI():
                     self.is_login = True
 
 
-    # Get User Profile via https://api.wunderlist.com/me
+    # Get user profile via https://api.wunderlist.com/me
     def get_profile(self):
         self.login()
         headers = { 'Authorization' : self.token }
         return self.wunderlist_api_call(self.apiurl_profile, headers)
 
 
-    # Get User Settings via https://api.wunderlist.com/me/settings
-    def get_setting(self):
+    # Get user settings via https://api.wunderlist.com/me/settings
+    def get_settings(self):
         self.login()
         headers = { 'Authorization' : self.token }
-        return self.wunderlist_api_call(self.apiurl_setting, headers)
+        return self.wunderlist_api_call(self.apiurl_settings, headers)
+
+
+    # Get user contacts via https://api.wunderlist.com/me/contacts
+    def get_contacts(self):
+        self.login()
+        headers = { 'Authorization' : self.token }
+        return self.wunderlist_api_call(self.apiurl_contacts, headers)
 
 
 
@@ -127,5 +135,6 @@ if __name__ == '__main__':
     api.login()
     print api.is_login, api.token
     print json.dumps(api.get_profile(), indent = 4)
-    print json.dumps(api.get_setting(), indent = 4)
+    print json.dumps(api.get_settings(), indent = 4)
+    print json.dumps(api.get_contacts(), indent = 4)
 
