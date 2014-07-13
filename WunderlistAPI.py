@@ -7,6 +7,8 @@ import socket
 import StringIO
 import gzip
 import json
+from operator import itemgetter
+from datetime import datetime
 from auth import email, password
 
 
@@ -37,6 +39,7 @@ class WunderlistAPI():
         self.apiurl_quota = "https://api.wunderlist.com/me/quota"
         self.apiurl_events = "https://api.wunderlist.com/me/events"
         self.apiurl_shares = "https://api.wunderlist.com/me/shares"
+        self.apiurl_reminders = "https://api.wunderlist.com/me/reminders"
 
 
     # Save token in a file
@@ -152,6 +155,10 @@ class WunderlistAPI():
         return self.wunderlist_api_call_read(self.apiurl_shares)
 
 
+    # Get user's reminders sorted by date via https://api.wunderlist.com/me/reminders
+    def get_reminders(self):
+        reminder_list = self.wunderlist_api_call_read(self.apiurl_reminders)
+        return sorted(reminder_list, key = lambda item : datetime.strptime(item['date'], '%Y-%m-%dT%H:%M:%SZ'), reverse = True)
 
 
 
@@ -167,3 +174,4 @@ if __name__ == '__main__':
     print "get_quota", json.dumps(api.get_quota(), indent = 4)
     print "get_events", json.dumps(api.get_events(), indent = 4)
     print "get_shares", json.dumps(api.get_shares(), indent = 4)
+    print "get_reminders", json.dumps(api.get_reminders(), indent = 4)
