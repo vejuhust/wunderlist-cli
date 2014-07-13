@@ -33,6 +33,8 @@ class WunderlistAPI():
         self.apiurl_profile = "https://api.wunderlist.com/me"
         self.apiurl_settings = "https://api.wunderlist.com/me/settings"
         self.apiurl_contacts = "https://api.wunderlist.com/me/contacts"
+        self.apiurl_services = "https://api.wunderlist.com/me/services"
+        self.apiurl_quota = "https://api.wunderlist.com/me/quota"
 
 
     # Save token in a file
@@ -128,6 +130,16 @@ class WunderlistAPI():
         return self.wunderlist_api_call_read(self.apiurl_contacts)
 
 
+    # Get user's services via https://api.wunderlist.com/me/services
+    def get_services(self):
+        return self.wunderlist_api_call_read(self.apiurl_services)
+
+
+    # Get user's quota via https://api.wunderlist.com/me/quota
+    def get_quota(self):
+        return self.wunderlist_api_call_read(self.apiurl_quota)
+
+
 
 
 if __name__ == '__main__':
@@ -135,7 +147,8 @@ if __name__ == '__main__':
     print api.is_login, api.token
     api.login()
     print api.is_login, api.token
-    print json.dumps(api.get_profile(), indent = 4)
-    print json.dumps(api.get_settings(), indent = 4)
-    print json.dumps(api.get_contacts(), indent = 4)
-
+    print "get_profile", json.dumps(api.get_profile(), indent = 4)
+    print "get_settings", json.dumps(api.get_settings(), indent = 4)
+    print "get_contacts", json.dumps(api.get_contacts(), indent = 4)
+    print "get_services", json.dumps(api.get_services(), indent = 4)
+    print "get_quota", json.dumps(api.get_quota(), indent = 4)
