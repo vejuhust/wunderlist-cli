@@ -2,4 +2,4 @@
 __MACOSX
 *.pyc
 auth.py
-token.txt
+token.json
