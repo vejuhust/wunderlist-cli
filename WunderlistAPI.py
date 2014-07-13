@@ -16,9 +16,9 @@ class WunderlistAPI():
     # Constructor
     def __init__(self, email, password):
         # Status
-        self.is_login = False
         self.account_email = email
         self.account_password = password
+        self.is_login = False
         self.token = ''
         # Constants
         self.login_url = "https://api.wunderlist.com/login"
@@ -34,14 +34,14 @@ class WunderlistAPI():
 
     # Save token in a file
     def tokenfile_save(self, content):
-        file = open(self.tokenfile_name, "w")
+        file = open(self.tokenfile_name, 'w')
         file.write(content)
         file.close()
 
 
     # Load token from a file
     def tokenfile_load(self):
-        file = open(self.tokenfile_name, "r")
+        file = open(self.tokenfile_name, 'r')
         content = file.read()
         file.close()
         return json.loads(content)
@@ -97,9 +97,10 @@ class WunderlistAPI():
 
 
 
-api = WunderlistAPI(email, password)
-print api.token
-api.login()
-print api.is_login
-print api.token
+
+if __name__ == '__main__':
+    api = WunderlistAPI(email, password)
+    print api.is_login, api.token
+    api.login()
+    print api.is_login, api.token
 
