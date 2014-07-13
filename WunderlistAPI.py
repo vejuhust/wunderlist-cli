@@ -82,6 +82,13 @@ class WunderlistAPI():
         return data
 
 
+    # Wrapper for read-only Wunderlist private API call
+    def wunderlist_api_call_read(self, url):
+        self.login()
+        headers = { 'Authorization' : self.token }
+        return self.wunderlist_api_call(url, headers)
+
+
     # Login with account and password
     def wunderlist_login(self, email, password):
         login_data = { 'email' : self.account_email, 'password' : self.account_password }
@@ -108,23 +115,17 @@ class WunderlistAPI():
 
     # Get user profile via https://api.wunderlist.com/me
     def get_profile(self):
-        self.login()
-        headers = { 'Authorization' : self.token }
-        return self.wunderlist_api_call(self.apiurl_profile, headers)
+        return self.wunderlist_api_call_read(self.apiurl_profile)
 
 
     # Get user settings via https://api.wunderlist.com/me/settings
     def get_settings(self):
-        self.login()
-        headers = { 'Authorization' : self.token }
-        return self.wunderlist_api_call(self.apiurl_settings, headers)
+        return self.wunderlist_api_call_read(self.apiurl_settings)
 
 
     # Get user contacts via https://api.wunderlist.com/me/contacts
     def get_contacts(self):
-        self.login()
-        headers = { 'Authorization' : self.token }
-        return self.wunderlist_api_call(self.apiurl_contacts, headers)
+        return self.wunderlist_api_call_read(self.apiurl_contacts)
 
 
 
