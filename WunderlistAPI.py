@@ -30,6 +30,7 @@ class WunderlistAPI():
             'Origin' : 'https://www.wunderlist.com',
         }
         self.tokenfile_name = "token.json"
+        self.apiurl_profile = "https://api.wunderlist.com/me"
 
 
     # Save token in a file
@@ -60,23 +61,31 @@ class WunderlistAPI():
         return content
 
 
-    # Login with account and password
-    def wunderlist_login(self, email, password):
+    # Call Wunderlist private API
+    def wunderlist_api_call(self, request_url, request_headers, request_data = None):
         data = {}
-        login_data = { 'email' : self.account_email, 'password' : self.account_password }
-        login_request = urllib2.Request(url = self.login_url, headers = self.login_headers, data = urllib.urlencode(login_data))
+        request_data = urllib.urlencode(request_data) if request_data else None
+        api_request = urllib2.Request(url = request_url, headers = request_headers, data = request_data)
         try:
-            login_response = urllib2.urlopen(login_request, timeout = 5)
+            api_response = urllib2.urlopen(api_request, timeout = 5)
         except urllib2.URLError, error:
             error_code = error.code if hasattr(error, 'code') else ''
             error_reason = error.reason if hasattr(error, 'reason') else ''
-            print "Login Error:", error_code, error_reason
+            print "API Error:", error_code, error_reason
         except Exception as error:
-            print "Login Error:", error
+            print "API Error:", error
         else:
-            content = self.decode_content(login_response)
-            self.tokenfile_save(content)
+            content = self.decode_content(api_response)
             data = json.loads(content)
+        return data
+
+
+    # Login with account and password
+    def wunderlist_login(self, email, password):
+        login_data = { 'email' : self.account_email, 'password' : self.account_password }
+        data = self.wunderlist_api_call(self.login_url, self.login_headers, login_data)
+        if data:
+            self.tokenfile_save(json.dumps(data))
         return data
 
 
@@ -87,13 +96,19 @@ class WunderlistAPI():
                 data = self.tokenfile_load()
                 self.token = data['token']
             except Exception as error:
-                print "Load Error:", error
+                print "Token Error:", error
                 data = self.wunderlist_login(email, password)
                 self.token = data['token'] if data.has_key('token') else ''
             finally:
                 if len(self.token) > 0:
                     self.is_login = True
-                #print json.dumps(data, sort_keys = True, indent = 4)
+
+
+    # Get User Profile via https://api.wunderlist.com/me
+    def get_profile(self):
+        self.login()
+        headers = { 'Authorization' : self.token }
+        return self.wunderlist_api_call(self.apiurl_profile, headers)
 
 
 
@@ -103,4 +118,5 @@ if __name__ == '__main__':
     print api.is_login, api.token
     api.login()
     print api.is_login, api.token
+    print json.dumps(api.get_profile(), sort_keys = True, indent = 4)
 
