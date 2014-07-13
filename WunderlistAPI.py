@@ -35,6 +35,8 @@ class WunderlistAPI():
         self.apiurl_contacts = "https://api.wunderlist.com/me/contacts"
         self.apiurl_services = "https://api.wunderlist.com/me/services"
         self.apiurl_quota = "https://api.wunderlist.com/me/quota"
+        self.apiurl_events = "https://api.wunderlist.com/me/events"
+        self.apiurl_shares = "https://api.wunderlist.com/me/shares"
 
 
     # Save token in a file
@@ -140,6 +142,17 @@ class WunderlistAPI():
         return self.wunderlist_api_call_read(self.apiurl_quota)
 
 
+    # Get user's events via https://api.wunderlist.com/me/events
+    def get_events(self):
+        return self.wunderlist_api_call_read(self.apiurl_events)
+
+
+    # Get user's sharing via https://api.wunderlist.com/me/shares
+    def get_shares(self):
+        return self.wunderlist_api_call_read(self.apiurl_shares)
+
+
+
 
 
 if __name__ == '__main__':
@@ -152,3 +165,5 @@ if __name__ == '__main__':
     print "get_contacts", json.dumps(api.get_contacts(), indent = 4)
     print "get_services", json.dumps(api.get_services(), indent = 4)
     print "get_quota", json.dumps(api.get_quota(), indent = 4)
+    print "get_events", json.dumps(api.get_events(), indent = 4)
+    print "get_shares", json.dumps(api.get_shares(), indent = 4)
