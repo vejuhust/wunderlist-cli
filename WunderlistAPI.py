@@ -7,6 +7,7 @@ import socket
 import StringIO
 import gzip
 import json
+from inspect import getargspec
 from operator import itemgetter
 from datetime import datetime
 from auth import email, password
@@ -224,17 +225,12 @@ class WunderlistAPI():
 
     # Create a new task with title, note*, list_id*, parent_id*, starred*, due_date* (* opitonal)
     def create_task(self, title, note = None, list_id = None, parent_id = None, starred = None, due_date = None):
-        task_info = { 'title' : title }
-        if note:
-            task_info['note'] = note
-        if list_id:
-            task_info['list_id'] = list_id
-        if parent_id:
-            task_info['parent_id'] = parent_id
-        if starred:
-            task_info['starred'] = starred
-        if due_date:
-            task_info['due_date'] = due_date
+        task_info = {}
+        params = getargspec(self.create_task).args
+        for key in params[1:]:
+            value = eval(key)
+            if value:
+                task_info[key] = value
         return self.wunderlist_api_call_post(self.apiurl_tasks, task_info)
 
 
@@ -246,18 +242,11 @@ class WunderlistAPI():
     # Modify title/note/list_id/parent_id/starred/due_date of a task, now parent_id can't be changed
     def modify_task(self, task_id, title = None, note = None, list_id = None, parent_id = None, starred = None, due_date = None):
         task_info = {}
-        if title:
-            task_info['title'] = title
-        if note:
-            task_info['note'] = note
-        if list_id:
-            task_info['list_id'] = list_id
-        if parent_id:
-            task_info['parent_id'] = parent_id
-        if starred:
-            task_info['starred'] = starred
-        if due_date:
-            task_info['due_date'] = due_date
+        params = getargspec(self.modify_task).args
+        for key in params[2:]:
+            value = eval(key)
+            if value:
+                task_info[key] = value
         task = self.wunderlist_api_call_put(self.apiurl_root + task_id, task_info) if task_info else {}
         return task
 
