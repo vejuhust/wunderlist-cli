@@ -107,6 +107,12 @@ class WunderlistAPI():
         return self.wunderlist_api_call(url, headers)
 
 
+    # Wrapper for Wunderlist private API call with POST method
+    def wunderlist_api_call_post(self, url, data):
+        headers = self.prepare_wunderlist_api_call()
+        return self.wunderlist_api_call(url, headers, data)
+
+
     # Login with account and password
     def wunderlist_login(self, email, password):
         login_data = { 'email' : self.account_email, 'password' : self.account_password }
@@ -198,6 +204,23 @@ class WunderlistAPI():
         return tasks
 
 
+    # Create a new list with title
+    def create_list(self, title):
+        return self.wunderlist_api_call_post(self.apiurl_lists, { 'title' : title })
+
+
+    # Create a new task with title, list_id*, starred*, due_date* (* opitonal)
+    def create_task(self, title, list_id = None, starred = None, due_date = None):
+        task_info = { 'title' : title }
+        if list_id:
+            task_info['list_id'] = list_id
+        if starred:
+            task_info['starred'] = starred
+        if due_date:
+            task_info['due_date'] = due_date
+        return self.wunderlist_api_call_post(self.apiurl_tasks, task_info)
+
+
 
 if __name__ == '__main__':
     api = WunderlistAPI(email, password)
@@ -215,5 +238,7 @@ if __name__ == '__main__':
     print "get_lists", json.dumps(api.get_lists(True), indent = 4)
     print "get_tasks", json.dumps(api.get_tasks(True), indent = 4)
     print "get_tasks_by_list", json.dumps(api.get_tasks_by_list("ABjMAAbobFc", True), indent = 4)
+    print "create_list", json.dumps(api.create_list("Test List Again & Again"), indent = 4)
+    print "create_task", json.dumps(api.create_task("test task mamam - tomorrow STAR", "ABjMAAbzjGQ", "true", "2014-07-16"), indent = 4)
 
 
