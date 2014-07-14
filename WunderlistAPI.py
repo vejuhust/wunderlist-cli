@@ -223,8 +223,8 @@ class WunderlistAPI():
         return self.wunderlist_api_call_post(self.apiurl_lists, { 'title' : title })
 
 
-    # Create a new task with title, note*, list_id*, parent_id*, starred*, due_date* (* opitonal)
-    def create_task(self, title, note = None, list_id = None, parent_id = None, starred = None, due_date = None):
+    # Create a new task with title, note*, list_id*, parent_id*, starred*, due_date*, assignee_id* (* opitonal)
+    def create_task(self, title, note = None, list_id = None, parent_id = None, starred = None, due_date = None, assignee_id = None):
         task_info = {}
         params = getargspec(self.create_task).args
         for key in params[1:]:
@@ -239,8 +239,8 @@ class WunderlistAPI():
         return self.wunderlist_api_call_put(self.apiurl_root + list_id, { 'title' : title })
 
 
-    # Modify title/note/list_id/parent_id/starred/due_date of a task, now parent_id can't be changed
-    def modify_task(self, task_id, title = None, note = None, list_id = None, parent_id = None, starred = None, due_date = None):
+    # Modify title/note/list_id/parent_id/starred/due_date/assignee_id of a task, now parent_id can't be changed
+    def modify_task(self, task_id, title = None, note = None, list_id = None, parent_id = None, starred = None, due_date = None, assignee_id = None):
         task_info = {}
         params = getargspec(self.modify_task).args
         for key in params[2:]:
@@ -259,6 +259,16 @@ class WunderlistAPI():
     # Delete a task as per its task_id
     def remove_task(self, task_id):
         return self.wunderlist_api_call_delete(self.apiurl_root + task_id)
+
+
+    # Complete a task as per its task_id
+    def check_task(self, task_id):
+        return self.wunderlist_api_call_put(self.apiurl_root + task_id, { 'completed_at' : 'now' })
+
+
+    # Uncomplete a task as per its task_id
+    def uncheck_task(self, task_id):
+        return self.wunderlist_api_call_put(self.apiurl_root + task_id, { 'completed_at' : '' })
 
 
 
@@ -285,5 +295,8 @@ if __name__ == '__main__':
     print "modify_task", json.dumps(api.modify_task("ACjMACe43cs", "HAVE FUN!!! bianji", None, "ABjMAAbzjGQ", None, "false", "2014-07-26"), indent = 4)
     print "remove_list", json.dumps(api.remove_list("ABjMAAbzi1U"), indent = 4)
     print "remove_task", json.dumps(api.remove_task("ACjMACe43ac"), indent = 4)
-
+    print "create_task", json.dumps(api.create_task(title = "New task assigned to Wei Ye", list_id = "ABjMAAbqDys", starred = "true", assignee_id = "AAAAAACSxWE"), indent = 4)
+    print "modify_task", json.dumps(api.modify_task(task_id = "ACjMACe6j8w", title = "New task assigned to dd", list_id = "ABjMAAbqDys", starred = "false", assignee_id = "AAAAAACS0lE"), indent = 4)
+    print "check_task", json.dumps(api.check_task("ACjMACe6j8w"), indent = 4)
+    print "uncheck_task", json.dumps(api.uncheck_task("ACjMACe6j8w"), indent = 4)
 
