@@ -222,9 +222,11 @@ class WunderlistAPI():
         return self.wunderlist_api_call_post(self.apiurl_lists, { 'title' : title })
 
 
-    # Create a new task with title, list_id*, parent_id*, starred*, due_date* (* opitonal)
-    def create_task(self, title, list_id = None, parent_id = None, starred = None, due_date = None):
+    # Create a new task with title, note*, list_id*, parent_id*, starred*, due_date* (* opitonal)
+    def create_task(self, title, note = None, list_id = None, parent_id = None, starred = None, due_date = None):
         task_info = { 'title' : title }
+        if note:
+            task_info['note'] = note
         if list_id:
             task_info['list_id'] = list_id
         if parent_id:
@@ -241,11 +243,13 @@ class WunderlistAPI():
         return self.wunderlist_api_call_put(self.apiurl_root + list_id, { 'title' : title })
 
 
-    # Modify title/list_id/parent_id/starred/due_date of a task, now parent_id can't be changed
-    def modify_task(self, task_id, title = None, list_id = None, parent_id = None, starred = None, due_date = None):
+    # Modify title/note/list_id/parent_id/starred/due_date of a task, now parent_id can't be changed
+    def modify_task(self, task_id, title = None, note = None, list_id = None, parent_id = None, starred = None, due_date = None):
         task_info = {}
         if title:
             task_info['title'] = title
+        if note:
+            task_info['note'] = note
         if list_id:
             task_info['list_id'] = list_id
         if parent_id:
@@ -287,9 +291,9 @@ if __name__ == '__main__':
     print "get_tasks_by_list", json.dumps(api.get_tasks_by_list("ABjMAAbobFc", True), indent = 4)
     exit(0)
     print "create_list", json.dumps(api.create_list("Test List Again & Again"), indent = 4)
-    print "create_task", json.dumps(api.create_task("test task mamam - tomorrow STAR", "ABjMAAbzjGQ", None, "true", "2014-07-16"), indent = 4)
+    print "create_task", json.dumps(api.create_task("test task mamam - tomorrow STAR", None, "ABjMAAbzjGQ", None, "true", "2014-07-16"), indent = 4)
     print "modify_list", json.dumps(api.modify_list("ABjMAAbzjGQ", "Test list 3"), indent = 4)
-    print "modify_task", json.dumps(api.modify_task("ACjMACe43cs", "HAVE FUN!!! bianji", "ABjMAAbzjGQ", None, "false", "2014-07-26"), indent = 4)
+    print "modify_task", json.dumps(api.modify_task("ACjMACe43cs", "HAVE FUN!!! bianji", None, "ABjMAAbzjGQ", None, "false", "2014-07-26"), indent = 4)
     print "remove_list", json.dumps(api.remove_list("ABjMAAbzi1U"), indent = 4)
     print "remove_task", json.dumps(api.remove_task("ACjMACe43ac"), indent = 4)
 
