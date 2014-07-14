@@ -92,11 +92,11 @@ class WunderlistAPI():
 
 
     # Wrapper for read-only Wunderlist private API call
-    def wunderlist_api_call_read(self, url, supplementary = None):
+    def wunderlist_api_call_read(self, url, param = None):
         self.login()
         headers = { 'Authorization' : self.token }
-        if supplementary:
-            headers = dict(headers.items() + supplementary.items())
+        if param:
+            url += '?' + urllib.urlencode(param)
         return self.wunderlist_api_call(url, headers)
 
 
@@ -207,6 +207,6 @@ if __name__ == '__main__':
     print "get_reminders", json.dumps(api.get_reminders(True), indent = 4)
     print "get_lists", json.dumps(api.get_lists(True), indent = 4)
     print "get_tasks", json.dumps(api.get_tasks(True), indent = 4)
-    print "get_tasks_by_list", json.dumps(api.get_tasks_by_list("ABjMAAbvUpc", True), indent = 4)
+    print "get_tasks_by_list", json.dumps(api.get_tasks_by_list("ABjMAAbobFc", True), indent = 4)
 
 
