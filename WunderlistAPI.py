@@ -120,6 +120,12 @@ class WunderlistAPI():
         return self.wunderlist_api_call(url, headers, data, 'PUT')
 
 
+    # Wrapper for Wunderlist private API call with DELETE method
+    def wunderlist_api_call_delete(self, url):
+        headers = self.prepare_wunderlist_api_call()
+        return self.wunderlist_api_call(url, headers, None, 'DELETE')
+
+
     # Login with account and password
     def wunderlist_login(self, email, password):
         login_data = { 'email' : self.account_email, 'password' : self.account_password }
@@ -248,6 +254,16 @@ class WunderlistAPI():
         return task
 
 
+    # Delete a list as per its list_id
+    def remove_list(self, list_id):
+        return self.wunderlist_api_call_delete(self.apiurl_root + list_id)
+    
+    
+    # Delete a task as per its task_id
+    def remove_task(self, task_id):
+        return self.wunderlist_api_call_delete(self.apiurl_root + task_id)
+
+
 
 if __name__ == '__main__':
     api = WunderlistAPI(email, password)
@@ -265,9 +281,12 @@ if __name__ == '__main__':
     print "get_lists", json.dumps(api.get_lists(True), indent = 4)
     print "get_tasks", json.dumps(api.get_tasks(True), indent = 4)
     print "get_tasks_by_list", json.dumps(api.get_tasks_by_list("ABjMAAbobFc", True), indent = 4)
+    exit(0)
     print "create_list", json.dumps(api.create_list("Test List Again & Again"), indent = 4)
     print "create_task", json.dumps(api.create_task("test task mamam - tomorrow STAR", "ABjMAAbzjGQ", "true", "2014-07-16"), indent = 4)
     print "modify_list", json.dumps(api.modify_list("ABjMAAbzjGQ", "Test list 3"), indent = 4)
     print "modify_task", json.dumps(api.modify_task("ACjMACe43cs", "HAVE FUN!!! bianji", "ABjMAAbzjGQ", "false", "2014-07-26"), indent = 4)
+    print "remove_list", json.dumps(api.remove_list("ABjMAAbzi1U"), indent = 4)
+    print "remove_task", json.dumps(api.remove_task("ACjMACe43ac"), indent = 4)
 
 
