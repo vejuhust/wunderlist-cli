@@ -73,10 +73,12 @@ class WunderlistAPI():
 
 
     # Call Wunderlist private API
-    def wunderlist_api_call(self, request_url, request_headers, request_data = None):
+    def wunderlist_api_call(self, request_url, request_headers, request_data = None, method = None):
         data = {}
         request_data = urllib.urlencode(request_data) if request_data else None
         api_request = urllib2.Request(url = request_url, headers = request_headers, data = request_data)
+        if method:
+            api_request.get_method = lambda: method
         try:
             api_response = urllib2.urlopen(api_request, timeout = 5)
         except urllib2.URLError, error:
@@ -91,10 +93,15 @@ class WunderlistAPI():
         return data
 
 
-    # Wrapper for read-only Wunderlist private API call
-    def wunderlist_api_call_read(self, url, param = None):
+    # Prepare for any Wunderlist private API calls
+    def prepare_wunderlist_api_call(self):
         self.login()
-        headers = { 'Authorization' : self.token }
+        return { 'Authorization' : self.token }
+
+
+    # Wrapper for Wunderlist private API call with GET method
+    def wunderlist_api_call_get(self, url, param = None):
+        headers = self.prepare_wunderlist_api_call()
         if param:
             url += '?' + urllib.urlencode(param)
         return self.wunderlist_api_call(url, headers)
@@ -126,42 +133,42 @@ class WunderlistAPI():
 
     # Get user profile via https://api.wunderlist.com/me
     def get_profile(self):
-        return self.wunderlist_api_call_read(self.apiurl_profile)
+        return self.wunderlist_api_call_get(self.apiurl_profile)
 
 
     # Get user settings via https://api.wunderlist.com/me/settings
     def get_settings(self):
-        return self.wunderlist_api_call_read(self.apiurl_settings)
+        return self.wunderlist_api_call_get(self.apiurl_settings)
 
 
     # Get user contacts via https://api.wunderlist.com/me/contacts
     def get_contacts(self):
-        return self.wunderlist_api_call_read(self.apiurl_contacts)
+        return self.wunderlist_api_call_get(self.apiurl_contacts)
 
 
     # Get user's services via https://api.wunderlist.com/me/services
     def get_services(self):
-        return self.wunderlist_api_call_read(self.apiurl_services)
+        return self.wunderlist_api_call_get(self.apiurl_services)
 
 
     # Get user's quota via https://api.wunderlist.com/me/quota
     def get_quota(self):
-        return self.wunderlist_api_call_read(self.apiurl_quota)
+        return self.wunderlist_api_call_get(self.apiurl_quota)
 
 
     # Get user's events via https://api.wunderlist.com/me/events
     def get_events(self):
-        return self.wunderlist_api_call_read(self.apiurl_events)
+        return self.wunderlist_api_call_get(self.apiurl_events)
 
 
     # Get user's sharing via https://api.wunderlist.com/me/shares
     def get_shares(self):
-        return self.wunderlist_api_call_read(self.apiurl_shares)
+        return self.wunderlist_api_call_get(self.apiurl_shares)
 
 
     # Get user's reminders sorted by date via https://api.wunderlist.com/me/reminders
     def get_reminders(self, sort = False):
-        tasks = self.wunderlist_api_call_read(self.apiurl_reminders)
+        tasks = self.wunderlist_api_call_get(self.apiurl_reminders)
         if sort:
             tasks = sorted(tasks, key = lambda item : datetime.strptime(item['date'], '%Y-%m-%dT%H:%M:%SZ'), reverse = True)
         return tasks
@@ -169,7 +176,7 @@ class WunderlistAPI():
 
     # Get user's all lists sorted by position via https://api.wunderlist.com/me/lists
     def get_lists(self, sort = False):
-        lists = self.wunderlist_api_call_read(self.apiurl_lists)
+        lists = self.wunderlist_api_call_get(self.apiurl_lists)
         if sort:
             lists = sorted(lists, key = itemgetter('position'), reverse = False)
         return lists
@@ -177,7 +184,7 @@ class WunderlistAPI():
 
     # Get user's all tasks sorted by list_id, completed, position via https://api.wunderlist.com/me/tasks
     def get_tasks(self, sort = False):
-        tasks = self.wunderlist_api_call_read(self.apiurl_tasks)
+        tasks = self.wunderlist_api_call_get(self.apiurl_tasks)
         if sort:
             tasks = sorted(tasks, key = itemgetter('list_id', 'completed_at', 'position'), reverse = False)
         return tasks
@@ -185,7 +192,7 @@ class WunderlistAPI():
 
     # Get user's all the tasks in a list via https://api.wunderlist.com/me/tasks
     def get_tasks_by_list(self, list_id, sort = False):
-        tasks = self.wunderlist_api_call_read(self.apiurl_tasks, { 'list_id' : list_id })
+        tasks = self.wunderlist_api_call_get(self.apiurl_tasks, { 'list_id' : list_id })
         if sort:
             tasks = sorted(tasks, key = itemgetter('completed_at', 'position'), reverse = False)
         return tasks
