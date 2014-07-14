@@ -183,6 +183,13 @@ class WunderlistAPI():
         return tasks
 
 
+    # Get user's all the tasks in a list via https://api.wunderlist.com/me/tasks
+    def get_tasks_by_list(self, list_id, sort = False):
+        tasks = self.wunderlist_api_call_read(self.apiurl_tasks, { 'list_id' : list_id })
+        if sort:
+            tasks = sorted(tasks, key = itemgetter('completed_at', 'position'), reverse = False)
+        return tasks
+
 
 
 if __name__ == '__main__':
@@ -200,4 +207,6 @@ if __name__ == '__main__':
     print "get_reminders", json.dumps(api.get_reminders(True), indent = 4)
     print "get_lists", json.dumps(api.get_lists(True), indent = 4)
     print "get_tasks", json.dumps(api.get_tasks(True), indent = 4)
+    print "get_tasks_by_list", json.dumps(api.get_tasks_by_list("ABjMAAbvUpc", True), indent = 4)
+
 
