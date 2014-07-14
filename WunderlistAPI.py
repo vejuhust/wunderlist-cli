@@ -92,9 +92,11 @@ class WunderlistAPI():
 
 
     # Wrapper for read-only Wunderlist private API call
-    def wunderlist_api_call_read(self, url):
+    def wunderlist_api_call_read(self, url, supplementary = None):
         self.login()
         headers = { 'Authorization' : self.token }
+        if supplementary:
+            headers = dict(headers.items() + supplementary.items())
         return self.wunderlist_api_call(url, headers)
 
 
@@ -158,21 +160,27 @@ class WunderlistAPI():
 
 
     # Get user's reminders sorted by date via https://api.wunderlist.com/me/reminders
-    def get_reminders(self):
-        reminder_list = self.wunderlist_api_call_read(self.apiurl_reminders)
-        return sorted(reminder_list, key = lambda item : datetime.strptime(item['date'], '%Y-%m-%dT%H:%M:%SZ'), reverse = True)
+    def get_reminders(self, sort = False):
+        tasks = self.wunderlist_api_call_read(self.apiurl_reminders)
+        if sort:
+            tasks = sorted(tasks, key = lambda item : datetime.strptime(item['date'], '%Y-%m-%dT%H:%M:%SZ'), reverse = True)
+        return tasks
 
 
     # Get user's all lists sorted by position via https://api.wunderlist.com/me/lists
-    def get_lists(self):
+    def get_lists(self, sort = False):
         lists = self.wunderlist_api_call_read(self.apiurl_lists)
-        return sorted(lists, key = itemgetter('position'), reverse = False)
+        if sort:
+            lists = sorted(lists, key = itemgetter('position'), reverse = False)
+        return lists
 
 
     # Get user's all tasks sorted by list_id, completed, position via https://api.wunderlist.com/me/tasks
-    def get_tasks(self):
-        lists = self.wunderlist_api_call_read(self.apiurl_tasks)
-        return sorted(lists, key = itemgetter('list_id', 'completed_at', 'position'), reverse = False)
+    def get_tasks(self, sort = False):
+        tasks = self.wunderlist_api_call_read(self.apiurl_tasks)
+        if sort:
+            tasks = sorted(tasks, key = itemgetter('list_id', 'completed_at', 'position'), reverse = False)
+        return tasks
 
 
 
@@ -189,7 +197,7 @@ if __name__ == '__main__':
     print "get_quota", json.dumps(api.get_quota(), indent = 4)
     print "get_events", json.dumps(api.get_events(), indent = 4)
     print "get_shares", json.dumps(api.get_shares(), indent = 4)
-    print "get_reminders", json.dumps(api.get_reminders(), indent = 4)
-    print "get_lists", json.dumps(api.get_lists(), indent = 4)
-    print "get_tasks", json.dumps(api.get_tasks(), indent = 4)
+    print "get_reminders", json.dumps(api.get_reminders(True), indent = 4)
+    print "get_lists", json.dumps(api.get_lists(True), indent = 4)
+    print "get_tasks", json.dumps(api.get_tasks(True), indent = 4)
 
