@@ -32,6 +32,7 @@ class WunderlistAPI():
             'Origin' : 'https://www.wunderlist.com',
         }
         self.tokenfile_name = "token.json"
+        self.apiurl_root = "https://api.wunderlist.com/"
         self.apiurl_profile = "https://api.wunderlist.com/me"
         self.apiurl_settings = "https://api.wunderlist.com/me/settings"
         self.apiurl_contacts = "https://api.wunderlist.com/me/contacts"
@@ -111,6 +112,12 @@ class WunderlistAPI():
     def wunderlist_api_call_post(self, url, data):
         headers = self.prepare_wunderlist_api_call()
         return self.wunderlist_api_call(url, headers, data)
+
+
+    # Wrapper for Wunderlist private API call with PUT method
+    def wunderlist_api_call_put(self, url, data):
+        headers = self.prepare_wunderlist_api_call()
+        return self.wunderlist_api_call(url, headers, data, 'PUT')
 
 
     # Login with account and password
@@ -221,6 +228,26 @@ class WunderlistAPI():
         return self.wunderlist_api_call_post(self.apiurl_tasks, task_info)
 
 
+    # Modify title of a list
+    def modify_list(self, list_id, title):
+        return self.wunderlist_api_call_put(self.apiurl_root + list_id, { 'title' : title })
+
+
+    # Modify title/list_id/starred/due_date of a task
+    def modify_task(self, task_id, title = None, list_id = None, starred = None, due_date = None):
+        task_info = {}
+        if title:
+            task_info['title'] = title
+        if list_id:
+            task_info['list_id'] = list_id
+        if starred:
+            task_info['starred'] = starred
+        if due_date:
+            task_info['due_date'] = due_date
+        task = self.wunderlist_api_call_put(self.apiurl_root + task_id, task_info) if task_info else {}
+        return task
+
+
 
 if __name__ == '__main__':
     api = WunderlistAPI(email, password)
@@ -240,5 +267,7 @@ if __name__ == '__main__':
     print "get_tasks_by_list", json.dumps(api.get_tasks_by_list("ABjMAAbobFc", True), indent = 4)
     print "create_list", json.dumps(api.create_list("Test List Again & Again"), indent = 4)
     print "create_task", json.dumps(api.create_task("test task mamam - tomorrow STAR", "ABjMAAbzjGQ", "true", "2014-07-16"), indent = 4)
+    print "modify_list", json.dumps(api.modify_list("ABjMAAbzjGQ", "Test list 3"), indent = 4)
+    print "modify_task", json.dumps(api.modify_task("ACjMACe43cs", "HAVE FUN!!! bianji", "ABjMAAbzjGQ", "false", "2014-07-26"), indent = 4)
 
 
