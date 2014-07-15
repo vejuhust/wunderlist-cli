@@ -7,6 +7,8 @@ import socket
 import StringIO
 import gzip
 import json
+from datetime import datetime, timedelta
+from calendar import timegm
 from inspect import getargspec
 from operator import itemgetter
 from datetime import datetime
@@ -206,7 +208,7 @@ class WunderlistAPI():
     def get_tasks(self, sort = False):
         tasks = self.wunderlist_api_call_get(self.apiurl_tasks)
         if sort:
-            tasks = sorted(tasks, key = itemgetter('list_id', 'completed_at', 'position'), reverse = False)
+            tasks = sorted(tasks, key = itemgetter('list_id', 'updated_at', 'position'), reverse = False)
         return tasks
 
 
@@ -214,7 +216,17 @@ class WunderlistAPI():
     def get_tasks_by_list(self, list_id, sort = False):
         tasks = self.wunderlist_api_call_get(self.apiurl_tasks, { 'list_id' : list_id })
         if sort:
-            tasks = sorted(tasks, key = itemgetter('completed_at', 'position'), reverse = False)
+            tasks = sorted(tasks, key = itemgetter('updated_at', 'position'), reverse = False)
+        return tasks
+
+
+    # Get user's all the tasks recently updated via https://api.wunderlist.com/me/tasks
+    def get_tasks_recently(self, hours = 0, minutes = 0, seconds = 0, sort = False):
+        since_date = datetime.utcnow() - timedelta(hours = hours, minutes = minutes, seconds = seconds)
+        since_stamp = timegm(since_date.timetuple())
+        tasks = self.wunderlist_api_call_get(self.apiurl_tasks, { 'since' : since_stamp })
+        if sort:
+            tasks = sorted(tasks, key = lambda item : datetime.strptime(item['updated_at'], '%Y-%m-%dT%H:%M:%SZ'), reverse = True)
         return tasks
 
 
@@ -288,6 +300,7 @@ if __name__ == '__main__':
     print "get_lists", json.dumps(api.get_lists(True), indent = 4)
     print "get_tasks", json.dumps(api.get_tasks(True), indent = 4)
     print "get_tasks_by_list", json.dumps(api.get_tasks_by_list("ABjMAAbobFc", True), indent = 4)
+    print "get_tasks_recently", json.dumps(api.get_tasks_recently(minutes = 30, sort = True), indent = 4)
     exit(0)
     print "create_list", json.dumps(api.create_list("Test List Again & Again"), indent = 4)
     print "create_task", json.dumps(api.create_task("test task mamam - tomorrow STAR", None, "ABjMAAbzjGQ", None, "true", "2014-07-16"), indent = 4)
