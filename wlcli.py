@@ -29,7 +29,7 @@ def parsers():
 
 
 
-def print_table(lines, column_length, mark = "BREAKLINE"):
+def print_table(lines, column_length, mark = "MARKBREAKLINE"):
     # Table design
     column_first = 20
     column_second = column_length if column_length else 40
@@ -57,8 +57,10 @@ def get_profile(api, args):
         profile = api.get_profile()
         lines = [
             [ "Name", profile['name'] ],
-            [ "User ID", profile['id'] ],
+            [ "Type", profile['type'] ],
+            [ "ID", profile['id'] ],
             [ "Email", profile['email'] ],
+            [ "Last Updated", profile['updated_at'] ],
             [ "Token", profile['token'] ],
         ]
         print_table(lines, args.column)
@@ -66,7 +68,22 @@ def get_profile(api, args):
 
 
 def get_contact(api, args):
-    print "get_contact()", args
+    if args.verbose:
+        print json.dumps(api.get_contacts(), indent = 4)
+    else:
+        lines = []
+        mark = "MARKBREAKLINECONTACTS"
+        contacts = api.get_contacts()
+        for contact in contacts:
+            lines = lines + [
+                [ "Name", contact['name'] ],
+                [ "Type", contact['type'] ],
+                [ "Is Pro?", "Yes" if contact['pro'] else "No" ],
+                [ "ID", contact['id'] ],
+                [ "Email", contact['email'] ],
+                [ "Last Updated", contact['updated_at'] ],
+            ] + [ [mark] ]
+        print_table(lines[:-1], args.column, mark)
 
 
 
