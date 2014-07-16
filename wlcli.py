@@ -29,7 +29,7 @@ def parsers():
 
 
 
-def print_table(lines, column_length, mark = "MARKBREAKLINE"):
+def print_table(lines, column_length, mark = "MARKBREAKLINE", title = [ "Key", "Value" ]):
     # Table design
     column_first = 20
     column_second = column_length if column_length else 40
@@ -40,7 +40,7 @@ def print_table(lines, column_length, mark = "MARKBREAKLINE"):
     format_line = "%s %%s %s %%s %s" % ((delimiter_vertical, ) * 3)
     format_break = "%s%s%%s%s+%s%%s%s%s" % ((delimiter_cross, ) + (delimiter_horizontal, ) * 4 + (delimiter_cross, ))
     breakline = format_break % (delimiter_horizontal * column_first, delimiter_horizontal * column_second)
-    lines = [ [ mark ], [ "Key", "Value" ], [ mark ] ] + lines + [ [ mark ] ]
+    lines = [ [ mark ], title, [ mark ] ] + lines + [ [ mark ] ]
     # Print
     for line in lines:
         if line[0] == mark:
@@ -75,7 +75,7 @@ def get_contact(api, args):
         mark = "MARKBREAKLINECONTACTS"
         contacts = api.get_contacts()
         for contact in contacts:
-            lines = lines + [
+            lines += [
                 [ "Name", contact['name'] ],
                 [ "Type", contact['type'] ],
                 [ "Is Pro?", "Yes" if contact['pro'] else "No" ],
@@ -88,7 +88,12 @@ def get_contact(api, args):
 
 
 def get_list(api, args):
-    print "get_list()", args
+    if args.verbose:
+        print json.dumps(api.get_lists(True), indent = 4)
+    else:
+        lists = api.get_lists(True)
+        lines = [ [ list['id'], list['title'] ] for list in lists]
+        print_table(lines, args.column, title = [ "ID", "Title" ])
 
 
 
