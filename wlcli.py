@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import argparse
+from WunderlistAPI import WunderlistAPI
 from auth import email, password
 
 
@@ -23,30 +24,23 @@ def parsers():
     return parser.parse_args()
 
 
-def get_profile(args):
-    print "get_profile()"
+def get_profile(api, args):
+    print "get_profile()", args
 
 
-def get_contact(args):
-    print "get_contact()"
+def get_contact(api, args):
+    print "get_contact()", args
 
 
-def get_list(args):
-    print "get_list()"
+def get_list(api, args):
+    print "get_list()", args
 
 
-def get_task(args):
-    print "get_task()"
-
-
-options = {
-    "get-profile" : get_profile,
-    "get-contact" : get_contact,
-    "get-list" : get_list,
-    "get-task" : get_task,
-}
+def get_task(api, args):
+    print "get_task()", args
 
 
 if __name__ == '__main__':
     args = parsers()
-    options[args.subparser_name](args)
+    api = WunderlistAPI(email, password)
+    eval(args.subparser_name.replace('-', '_'))(api, args)
