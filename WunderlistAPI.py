@@ -216,7 +216,7 @@ class WunderlistAPI():
     def get_tasks_by_list(self, list_id, sort = False):
         tasks = self.wunderlist_api_call_get(self.apiurl_tasks, { 'list_id' : list_id })
         if sort:
-            tasks = sorted(tasks, key = itemgetter('updated_at', 'position'), reverse = False)
+            tasks = sorted(tasks, key = itemgetter('position'), reverse = False)
         return tasks
 
 

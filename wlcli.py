@@ -93,12 +93,21 @@ def get_list(api, args):
     else:
         lists = api.get_lists(True)
         lines = [ [ list['id'], list['title'] ] for list in lists]
-        print_table(lines, args.column, title = [ "ID", "Title" ])
+        print_table(lines, args.column, title = [ "List ID", "Title" ])
 
 
 
 def get_task(api, args):
-    print "get_task()", args
+    if args.verbose:
+        print json.dumps(api.get_tasks_by_list(args.list_id, True), indent = 4)
+    else:
+        tasks = api.get_tasks_by_list(args.list_id, True)
+        lines = []
+        for task in tasks:
+            if not task['parent_id'] and not task['completed_at']:
+                lines += [ [ task['id'], task['title'] ] ]
+        print_table(lines, args.column, title = [ "Task ID", "Title" ])
+
 
 
 
