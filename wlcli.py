@@ -29,18 +29,24 @@ def parsers():
 
 
 
-def print_table(lines, column_length):
+def print_table(lines, column_length, mark = "BREAKLINE"):
+    # Table design
     column_first = 20
     column_second = column_length if column_length else 40
     delimiter_vertical = "|"
-    delimiter_horizontal = "="
-    format = " %s %s %s "
-    breakline = format % (delimiter_horizontal * column_first, delimiter_vertical, delimiter_horizontal * column_second)
-    lines = [[ "Key", "Value" ]] + lines + [[ "1234567890" * 10, "1234567890" * 10]]
-    for index, line in enumerate(lines):
-        if index == 0 or index == 1:
+    delimiter_horizontal = "-"
+    delimiter_cross = "+"
+    # Format
+    format_line = "%s %%s %s %%s %s" % ((delimiter_vertical, ) * 3)
+    format_break = "%s%s%%s%s+%s%%s%s%s" % ((delimiter_cross, ) + (delimiter_horizontal, ) * 4 + (delimiter_cross, ))
+    breakline = format_break % (delimiter_horizontal * column_first, delimiter_horizontal * column_second)
+    lines = [ [ mark ], [ "Key", "Value" ], [ mark ] ] + lines + [ [ mark ] ]
+    # Print
+    for line in lines:
+        if line[0] == mark:
             print breakline
-        print format % (line[0][:column_first].ljust(column_first), delimiter_vertical, line[1][:column_second].ljust(column_second))
+        else:
+            print format_line % (line[0][:column_first].ljust(column_first), line[1][:column_second].ljust(column_second))
 
 
 
