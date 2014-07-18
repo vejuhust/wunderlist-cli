@@ -283,6 +283,11 @@ class WunderlistAPI():
         return self.wunderlist_api_call_put(self.apiurl_root + task_id, { 'completed_at' : '' })
 
 
+    # Get details of a task as per its task_id
+    def get_task(self, task_id):
+        return self.wunderlist_api_call_get(self.apiurl_root + task_id)
+
+
 
 if __name__ == '__main__':
     api = WunderlistAPI(email, password)
@@ -312,4 +317,5 @@ if __name__ == '__main__':
     print "modify_task", json.dumps(api.modify_task(task_id = "ACjMACe6j8w", title = "New task assigned to dd", list_id = "ABjMAAbqDys", starred = "false", assignee_id = "AAAAAACS0lE"), indent = 4)
     print "check_task", json.dumps(api.check_task("ACjMACe6j8w"), indent = 4)
     print "uncheck_task", json.dumps(api.uncheck_task("ACjMACe6j8w"), indent = 4)
+    print "get_task", json.dumps(api.get_task("ACjMACfiwS8"), indent = 4)
 
