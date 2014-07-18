@@ -127,29 +127,51 @@ def task_info(api, args):
     else:
         task = api.get_task(args.task_id)
         lines = [
-           [ "Title", task['title'] ],
-           [ "Type", task['type'] ],
-           [ "ID", task['id'] ],
-           [ "List ID", task['list_id'] ],
-           [ "Parent ID", task['parent_id'] ],
-           [ "Assgined To", task['assignee_id'] ],
-           [ "Starred", "Yes" if task['starred'] else "No" ],
-           [ "Due Date", task['due_date'] ],
-           [ "Created", task['created_at'] ],
-           [ "Last Updated", task['updated_at'] ],
-           [ "Completed", task['completed_at'] ],
-           [ "Note", task['note'] ],
+            [ "Title", task['title'] ],
+            [ "Type", task['type'] ],
+            [ "ID", task['id'] ],
+            [ "List ID", task['list_id'] ],
+            [ "Parent ID", task['parent_id'] ],
+            [ "Assgined To", task['assignee_id'] ],
+            [ "Starred", "Yes" if task['starred'] else "No" ],
+            [ "Due Date", task['due_date'] ],
+            [ "Created", task['created_at'] ],
+            [ "Last Updated", task['updated_at'] ],
+            [ "Completed", task['completed_at'] ],
+            [ "Note", task['note'] ],
         ]
         print_table(lines, args.column)
 
 
+
 def task_done(api, args):
-    pass
+    task = api.check_task(args.task_id)
+    if args.verbose:
+        print json.dumps(task, indent = 4)
+    else:
+        lines = [
+            [ "Title", task['title'] ],
+            [ "Type", task['type'] ],
+            [ "ID", task['id'] ],
+            [ "Last Updated", task['updated_at'] ],
+        ]
+        print_table(lines, args.column)
+
 
 
 
 def task_undo(api, args):
-    pass
+    task = api.uncheck_task(args.task_id)
+    if args.verbose:
+        print json.dumps(task, indent = 4)
+    else:
+        lines = [
+            [ "Title", task['title'] ],
+            [ "Type", task['type'] ],
+            [ "ID", task['id'] ],
+            [ "Last Updated", task['updated_at'] ],
+        ]
+        print_table(lines, args.column)
 
 
 
