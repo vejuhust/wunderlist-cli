@@ -24,6 +24,15 @@ def parsers():
 
     parser_gettask = subparsers.add_parser("get-task", help = "get info of task in a list")
     parser_gettask.add_argument("list_id", type = str, action = 'store', help = "id of the list")
+    
+    parser_gettask = subparsers.add_parser("task-info", help = "get detail info of a task")
+    parser_gettask.add_argument("task_id", type = str, action = 'store', help = "id of the task")
+    
+    parser_gettask = subparsers.add_parser("task-done", help = "mark a task as completed")
+    parser_gettask.add_argument("task_id", type = str, action = 'store', help = "id of the task")
+    
+    parser_gettask = subparsers.add_parser("task-undo", help = "mark a task as to-do")
+    parser_gettask.add_argument("task_id", type = str, action = 'store', help = "id of the task")
 
     return parser.parse_args()
 
@@ -108,6 +117,20 @@ def get_task(api, args):
                 lines += [ [ task['id'], task['title'] ] ]
         print_table(lines, args.column, title = [ "Task ID", "Title" ])
 
+
+
+def task_info(api, args):
+    pass
+
+
+
+def task_done(api, args):
+    pass
+
+
+
+def task_undo(api, args):
+    pass
 
 
 
