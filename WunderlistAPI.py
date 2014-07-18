@@ -7,6 +7,7 @@ import socket
 import StringIO
 import gzip
 import json
+import time
 from datetime import datetime, timedelta
 from calendar import timegm
 from inspect import getargspec
@@ -275,7 +276,7 @@ class WunderlistAPI():
 
     # Complete a task as per its task_id
     def check_task(self, task_id):
-        return self.wunderlist_api_call_put(self.apiurl_root + task_id, { 'completed_at' : 'now' })
+        return self.wunderlist_api_call_put(self.apiurl_root + task_id, { 'completed_at' : time.strftime('%Y-%m-%dT%H:%M:%SZ') })
 
 
     # Uncomplete a task as per its task_id
