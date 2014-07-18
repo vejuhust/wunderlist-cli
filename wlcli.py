@@ -55,7 +55,9 @@ def print_table(lines, column_length, mark = "MARKBREAKLINE", title = [ "Key", "
         if line[0] == mark:
             print breakline
         else:
-            print format_line % (line[0][:column_first].ljust(column_first), line[1][:column_second].ljust(column_second))
+            line0 = line[0] if line[0] else ""
+            line1 = line[1] if line[1] else ""
+            print format_line % (line0[:column_first].ljust(column_first), line1[:column_second].ljust(column_second))
 
 
 
@@ -120,8 +122,25 @@ def get_task(api, args):
 
 
 def task_info(api, args):
-    pass
-
+    if args.verbose:
+        print json.dumps(api.get_task(args.task_id), indent = 4)
+    else:
+        task = api.get_task(args.task_id)
+        lines = [
+           [ "Title", task['title'] ],
+           [ "Type", task['type'] ],
+           [ "ID", task['id'] ],
+           [ "List ID", task['list_id'] ],
+           [ "Parent ID", task['parent_id'] ],
+           [ "Assgined To", task['assignee_id'] ],
+           [ "Starred", "Yes" if task['starred'] else "No" ],
+           [ "Due Date", task['due_date'] ],
+           [ "Created", task['created_at'] ],
+           [ "Last Updated", task['updated_at'] ],
+           [ "Completed", task['completed_at'] ],
+           [ "Note", task['note'] ],
+        ]
+        print_table(lines, args.column)
 
 
 def task_done(api, args):
