@@ -62,10 +62,10 @@ def print_table(lines, column_length, mark = "MARKBREAKLINE", title = [ "Key", "
 
 
 def get_profile(api, args):
+    profile = api.get_profile()
     if args.verbose:
-        print json.dumps(api.get_profile(), indent = 4)
+        print json.dumps(profile, indent = 4)
     else:
-        profile = api.get_profile()
         lines = [
             [ "Name", profile['name'] ],
             [ "Type", profile['type'] ],
@@ -79,12 +79,12 @@ def get_profile(api, args):
 
 
 def get_contact(api, args):
+    contacts = api.get_contacts()
     if args.verbose:
-        print json.dumps(api.get_contacts(), indent = 4)
+        print json.dumps(contacts, indent = 4)
     else:
         lines = []
         mark = "MARKBREAKLINECONTACTS"
-        contacts = api.get_contacts()
         for contact in contacts:
             lines += [
                 [ "Name", contact['name'] ],
@@ -99,20 +99,20 @@ def get_contact(api, args):
 
 
 def get_list(api, args):
+    lists = api.get_lists(True)
     if args.verbose:
-        print json.dumps(api.get_lists(True), indent = 4)
+        print json.dumps(lists, indent = 4)
     else:
-        lists = api.get_lists(True)
         lines = [ [ list['id'], list['title'] ] for list in lists]
         print_table(lines, args.column, title = [ "List ID", "Title" ])
 
 
 
 def get_task(api, args):
+    tasks = api.get_tasks_by_list(args.list_id, True)
     if args.verbose:
-        print json.dumps(api.get_tasks_by_list(args.list_id, True), indent = 4)
+        print json.dumps(tasks, indent = 4)
     else:
-        tasks = api.get_tasks_by_list(args.list_id, True)
         lines = []
         for task in tasks:
             if not task['parent_id'] and not task['completed_at']:
@@ -122,10 +122,10 @@ def get_task(api, args):
 
 
 def task_info(api, args):
+    task = api.get_task(args.task_id)
     if args.verbose:
-        print json.dumps(api.get_task(args.task_id), indent = 4)
+        print json.dumps(task, indent = 4)
     else:
-        task = api.get_task(args.task_id)
         lines = [
             [ "Title", task['title'] ],
             [ "Type", task['type'] ],
@@ -154,6 +154,7 @@ def task_done(api, args):
             [ "Type", task['type'] ],
             [ "ID", task['id'] ],
             [ "Last Updated", task['updated_at'] ],
+            [ "Completed", task['completed_at'] ],
         ]
         print_table(lines, args.column)
 
@@ -170,6 +171,7 @@ def task_undo(api, args):
             [ "Type", task['type'] ],
             [ "ID", task['id'] ],
             [ "Last Updated", task['updated_at'] ],
+            [ "Completed", task['completed_at'] ],
         ]
         print_table(lines, args.column)
 
