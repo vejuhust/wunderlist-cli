@@ -117,28 +117,18 @@ def get_list(api, args):
 def get_task(api, args):
     tasks = api.get_tasks_by_list(args.list_id, True)
     if args.verbose:
-        filtered = []
         if args.display_done:
-            for task in tasks:
-                if not task['parent_id'] and task['completed_at']:
-                    filtered.append(task)
+            filtered = [ task for task in tasks if not task['parent_id'] and task['completed_at'] ]
         else:
-            for task in tasks:
-                if not task['parent_id'] and not task['completed_at']:
-                    filtered.append(task)
+            filtered = [ task for task in tasks if not task['parent_id'] and not task['completed_at'] ]
         print json.dumps(filtered, indent = 4)
     else:
         mark = "MARKBREAKLINETASK"
-        lines = []
-        for task in tasks:
-            if not task['parent_id'] and not task['completed_at']:
-                lines += [ [ task['id'], task['title'] ] ]
+        lines = [ [ task['id'], task['title'] ] for task in tasks if not task['parent_id'] and not task['completed_at'] ]
         if args.display_done:
             lines += [ [mark] ]
             tasks = sorted(tasks, key = lambda item : datetime.strptime(item['updated_at'], '%Y-%m-%dT%H:%M:%SZ'), reverse = True)
-            for task in tasks:
-                if not task['parent_id'] and task['completed_at']:
-                    lines += [ [ task['id'], task['title'] ] ]
+            lines += [ [ task['id'], task['title'] ] for task in tasks if not task['parent_id'] and task['completed_at'] ]
         print_table(lines, args.column, mark, title = [ "Task ID", "Title" ])
 
 
@@ -158,16 +148,11 @@ def get_subtask(api, args):
         print json.dumps(filtered, indent = 4)
     else:
         mark = "MARKBREAKLINESUBTASK"
-        lines = []
-        for task in subtasks:
-            if not task['completed_at']:
-                lines += [ [ task['id'], task['title'] ] ]
+        lines = [ [ task['id'], task['title'] ] for task in subtasks if not task['completed_at'] ]
         if args.display_done:
             lines += [ [mark] ]
             tasks = sorted(subtasks, key = itemgetter('position'), reverse = False)
-            for task in tasks:
-                if task['completed_at']:
-                    lines += [ [ task['id'], task['title'] ] ]
+            lines += [ [ task['id'], task['title'] ] for task in tasks if task['completed_at'] ]
         print_table(lines, args.column, mark, title = [ "Sub-task ID", "Title" ])
 
 
