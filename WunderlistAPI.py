@@ -231,6 +231,12 @@ class WunderlistAPI():
         return tasks
 
 
+    # Read user's a particular task via https://api.wunderlist.com/me/tasks
+    def read_task_by_id(self, task_id):
+        task = self.__wunderlist_api_call_get(self.apiurl_root + task_id)
+        return task
+
+
     # Create a new list with title
     def create_list(self, title):
         return self.__wunderlist_api_call_post(self.apiurl_lists, { 'title' : title })
