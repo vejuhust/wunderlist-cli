@@ -12,7 +12,6 @@ from datetime import datetime, timedelta
 from calendar import timegm
 from inspect import getargspec
 from operator import itemgetter
-from datetime import datetime
 from auth import email, password
 
 

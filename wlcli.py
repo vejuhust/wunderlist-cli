@@ -5,10 +5,12 @@ import argparse
 import json
 from WunderlistAPI import WunderlistAPI
 from auth import email, password
+from datetime import datetime
 
 
 def parsers():
     parser = argparse.ArgumentParser(description = "unofficial commandline tool for wunderlist")
+    parser.add_argument("-d", "--display-done", help = "show the completed tasks/subtasks aligned", action = "store_true")
 
     group = parser.add_mutually_exclusive_group()
     group.add_argument("-v", "--verbose", help = "increase output verbosity", action = "store_true")
@@ -111,13 +113,29 @@ def get_list(api, args):
 def get_task(api, args):
     tasks = api.get_tasks_by_list(args.list_id, True)
     if args.verbose:
-        print json.dumps(tasks, indent = 4)
+        filtered = []
+        if args.display_done:
+            for task in tasks:
+                if not task['parent_id'] and task['completed_at']:
+                    filtered.append(task)
+        else:
+            for task in tasks:
+                if not task['parent_id'] and not task['completed_at']:
+                    filtered.append(task)
+        print json.dumps(filtered, indent = 4)
     else:
+        mark = "MARKBREAKLINETASK"
         lines = []
         for task in tasks:
             if not task['parent_id'] and not task['completed_at']:
                 lines += [ [ task['id'], task['title'] ] ]
-        print_table(lines, args.column, title = [ "Task ID", "Title" ])
+        if args.display_done:
+            lines += [ [mark] ]
+            tasks = sorted(tasks, key = lambda item : datetime.strptime(item['updated_at'], '%Y-%m-%dT%H:%M:%SZ'), reverse = True)
+            for task in tasks:
+                if not task['parent_id'] and task['completed_at']:
+                    lines += [ [ task['id'], task['title'] ] ]
+        print_table(lines, args.column, mark, title = [ "Task ID", "Title" ])
 
 
 
