@@ -47,6 +47,10 @@ def parsers():
     parser_createtask.add_argument("list_id", type = str, action = 'store', help = "id of the list")
     parser_createtask.add_argument("title", type = str, action = 'store', help = "title of the task")
 
+    parser_createsubtask = subparsers.add_parser("create-subtask", help = "create a subtask with title")
+    parser_createsubtask.add_argument("task_id", type = str, action = 'store', help = "id of the parent task")
+    parser_createsubtask.add_argument("title", type = str, action = 'store', help = "title of the subtask")
+
     parser_updatelist = subparsers.add_parser("update-list", help = "update a list")
     parser_updatelist.add_argument("list_id", type = str, action = 'store', help = "id of the list")
     parser_updatelist.add_argument("title", type = str, action = 'store', help = "title of the list")
@@ -55,11 +59,18 @@ def parsers():
     parser_updatetask.add_argument("task_id", type = str, action = 'store', help = "id of the task")
     parser_updatetask.add_argument("title", type = str, action = 'store', help = "title of the task")
     
+    parser_updatesubtask = subparsers.add_parser("update-subtask", help = "update a subtask")
+    parser_updatesubtask.add_argument("task_id", type = str, action = 'store', help = "id of the subtask")
+    parser_updatesubtask.add_argument("title", type = str, action = 'store', help = "title of the subtask")
+    
     parser_deletelist = subparsers.add_parser("delete-list", help = "delete a list")
     parser_deletelist.add_argument("list_id", type = str, action = 'store', help = "id of the list")
 
     parser_deletetask = subparsers.add_parser("delete-task", help = "delete a task")
     parser_deletetask.add_argument("task_id", type = str, action = 'store', help = "id of the task")
+
+    parser_deletesubtask = subparsers.add_parser("delete-subtask", help = "delete a subtask")
+    parser_deletesubtask.add_argument("task_id", type = str, action = 'store', help = "id of the subtask")
 
     return parser.parse_args()
 
@@ -257,6 +268,23 @@ def create_task(api, args):
             [ "Title", task['title'] ],
             [ "Type", task['type'] ],
             [ "ID", task['id'] ],
+            [ "List ID", task['list_id'] ],
+            [ "Last Updated", task['updated_at'] ],
+        ]
+        print_table(lines, args.column)
+
+
+
+def create_subtask(api, args):
+    task = api.create_task(title = args.title, parent_id = args.task_id)
+    if args.verbose:
+        print json.dumps(task, indent = 4)
+    else:
+        lines = [
+            [ "Title", task['title'] ],
+            [ "Type", task['type'] ],
+            [ "ID", task['id'] ],
+            [ "Parent ID", task['parent_id'] ],
             [ "Last Updated", task['updated_at'] ],
         ]
         print_table(lines, args.column)
@@ -293,6 +321,10 @@ def update_task(api, args):
 
 
 
+def update_subtask(api, args):
+    update_task(api, args)
+
+
 
 def delete_list(api, args):
     list = api.remove_list(args.list_id)
@@ -304,6 +336,10 @@ def delete_task(api, args):
     task = api.remove_task(args.task_id)
     print json.dumps(task, indent = 4)
 
+
+
+def delete_subtask(api, args):
+    delete_task(api, args)
 
 
 
