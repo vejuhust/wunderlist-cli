@@ -63,14 +63,8 @@ def parsers():
     parser_updatesubtask.add_argument("task_id", type = str, action = 'store', help = "id of the subtask")
     parser_updatesubtask.add_argument("title", type = str, action = 'store', help = "title of the subtask")
     
-    parser_deletelist = subparsers.add_parser("delete-list", help = "delete a list")
-    parser_deletelist.add_argument("list_id", type = str, action = 'store', help = "id of the list")
-
-    parser_deletetask = subparsers.add_parser("delete-task", help = "delete a task")
-    parser_deletetask.add_argument("task_id", type = str, action = 'store', help = "id of the task")
-
-    parser_deletesubtask = subparsers.add_parser("delete-subtask", help = "delete a subtask")
-    parser_deletesubtask.add_argument("task_id", type = str, action = 'store', help = "id of the subtask")
+    parser_delete = subparsers.add_parser("delete", help = "delete a list/task/subtask")
+    parser_delete.add_argument("item_id", type = str, action = 'store', help = "id of the list/task/subtask")
 
     return parser.parse_args()
 
@@ -326,20 +320,9 @@ def update_subtask(api, args):
 
 
 
-def delete_list(api, args):
-    list = api.remove_list(args.list_id)
-    print json.dumps(list, indent = 4)
-
-
-
-def delete_task(api, args):
-    task = api.remove_task(args.task_id)
-    print json.dumps(task, indent = 4)
-
-
-
-def delete_subtask(api, args):
-    delete_task(api, args)
+def delete(api, args):
+    item = api.remove(args.item_id)
+    print json.dumps(item, indent = 4)
 
 
 
