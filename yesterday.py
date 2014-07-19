@@ -15,21 +15,27 @@ output_string = ""
 
 def print_subtask(task):
     global output_string
-    tick = "[x]" if task['completed_at'] else "[ ]"
+    is_done =  True if task['completed_at'] else False
     date = datetime.strptime(task['completed_at'], '%Y-%m-%dT%H:%M:%SZ') + timedelta(hours = 8)
     datestr = date.strftime('%H:%M %b %d')
     title = task['title']
-    output_string += "  * %s _%s_ - %s     \n" % (tick, datestr, title)
+    if is_done:
+        output_string += "  * `%s` %s     \n" % (datestr, title)
+    else:
+        output_string += "  * %s     \n" % (title)
 
 
 def print_task(task, child_tasks):
     global output_string
-    tick = "[x]" if task['completed_at'] else "[ ]"
+    is_done =  True if task['completed_at'] else False
     date = datetime.strptime(task['updated_at'], '%Y-%m-%dT%H:%M:%SZ') + timedelta(hours = 8)
     datestr = date.strftime('%H:%M %b %d')
     title = task['title']
     note = task['note']
-    output_string += "* %s _%s_ - %s     \n" % (tick, datestr, title)
+    if is_done:
+        output_string += "* `%s` %s     \n" % (datestr, title)
+    else:
+        output_string += "* %s     \n" % (title)
     for subtask in child_tasks:
         if subtask['parent_id'] == task['id']:
             print_subtask(subtask)
