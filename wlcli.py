@@ -43,12 +43,23 @@ def parsers():
     parser_createlist = subparsers.add_parser("create-list", help = "create a list with title")
     parser_createlist.add_argument("title", type = str, action = 'store', help = "title of the list")
 
+    parser_createtask = subparsers.add_parser("create-task", help = "create a task with title")
+    parser_createtask.add_argument("list_id", type = str, action = 'store', help = "id of the list")
+    parser_createtask.add_argument("title", type = str, action = 'store', help = "title of the task")
+
     parser_updatelist = subparsers.add_parser("update-list", help = "update a list")
     parser_updatelist.add_argument("list_id", type = str, action = 'store', help = "id of the list")
     parser_updatelist.add_argument("title", type = str, action = 'store', help = "title of the list")
     
+    parser_updatetask = subparsers.add_parser("update-task", help = "update a task")
+    parser_updatetask.add_argument("task_id", type = str, action = 'store', help = "id of the task")
+    parser_updatetask.add_argument("title", type = str, action = 'store', help = "title of the task")
+    
     parser_deletelist = subparsers.add_parser("delete-list", help = "delete a list")
     parser_deletelist.add_argument("list_id", type = str, action = 'store', help = "id of the list")
+
+    parser_deletetask = subparsers.add_parser("delete-task", help = "delete a task")
+    parser_deletetask.add_argument("task_id", type = str, action = 'store', help = "id of the task")
 
     return parser.parse_args()
 
@@ -237,6 +248,21 @@ def create_list(api, args):
 
 
 
+def create_task(api, args):
+    task = api.create_task(title = args.title, list_id = args.list_id)
+    if args.verbose:
+        print json.dumps(task, indent = 4)
+    else:
+        lines = [
+            [ "Title", task['title'] ],
+            [ "Type", task['type'] ],
+            [ "ID", task['id'] ],
+            [ "Last Updated", task['updated_at'] ],
+        ]
+        print_table(lines, args.column)
+
+
+
 def update_list(api, args):
     list = api.modify_list(args.list_id, args.title)
     if args.verbose:
@@ -252,9 +278,31 @@ def update_list(api, args):
 
 
 
+def update_task(api, args):
+    task = api.modify_task(args.task_id, args.title)
+    if args.verbose:
+        print json.dumps(task, indent = 4)
+    else:
+        lines = [
+            [ "Title", task['title'] ],
+            [ "Type", task['type'] ],
+            [ "ID", task['id'] ],
+            [ "Last Updated", task['updated_at'] ],
+        ]
+        print_table(lines, args.column)
+
+
+
+
 def delete_list(api, args):
     list = api.remove_list(args.list_id)
     print json.dumps(list, indent = 4)
+
+
+
+def delete_task(api, args):
+    task = api.remove_task(args.task_id)
+    print json.dumps(task, indent = 4)
 
 
 
