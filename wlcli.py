@@ -206,7 +206,6 @@ def task_done(api, args):
 
 
 
-
 def task_undo(api, args):
     task = api.uncheck_task(args.task_id)
     if args.verbose:
@@ -224,17 +223,39 @@ def task_undo(api, args):
 
 
 def create_list(api, args):
-    pass
+    list = api.create_list(args.title)
+    if args.verbose:
+        print json.dumps(list, indent = 4)
+    else:
+        lines = [
+            [ "Title", list['title'] ],
+            [ "Type", list['type'] ],
+            [ "ID", list['id'] ],
+            [ "Last Updated", list['updated_at'] ],
+        ]
+        print_table(lines, args.column)
 
 
 
 def update_list(api, args):
-    pass
+    list = api.modify_list(args.list_id, args.title)
+    if args.verbose:
+        print json.dumps(list, indent = 4)
+    else:
+        lines = [
+            [ "Title", list['title'] ],
+            [ "Type", list['type'] ],
+            [ "ID", list['id'] ],
+            [ "Last Updated", list['updated_at'] ],
+        ]
+        print_table(lines, args.column)
 
 
 
 def delete_list(api, args):
-    pass
+    list = api.remove_list(args.list_id)
+    print json.dumps(list, indent = 4)
+
 
 
 
