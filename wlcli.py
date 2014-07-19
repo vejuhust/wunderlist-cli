@@ -28,17 +28,27 @@ def parsers():
     parser_gettask = subparsers.add_parser("get-task", help = "get info of task in a list")
     parser_gettask.add_argument("list_id", type = str, action = 'store', help = "id of the list")
     
-    parser_gettask = subparsers.add_parser("get-subtask", help = "get info of subtasks of a task")
-    parser_gettask.add_argument("task_id", type = str, action = 'store', help = "id of the task")
+    parser_getsubtask = subparsers.add_parser("get-subtask", help = "get info of subtasks of a task")
+    parser_getsubtask.add_argument("task_id", type = str, action = 'store', help = "id of the task")
     
-    parser_gettask = subparsers.add_parser("task-info", help = "get detail info of a task")
-    parser_gettask.add_argument("task_id", type = str, action = 'store', help = "id of the task")
+    parser_taskinfo = subparsers.add_parser("task-info", help = "get detail info of a task")
+    parser_taskinfo.add_argument("task_id", type = str, action = 'store', help = "id of the task")
     
-    parser_gettask = subparsers.add_parser("task-done", help = "mark a task as completed")
-    parser_gettask.add_argument("task_id", type = str, action = 'store', help = "id of the task")
+    parser_taskdone = subparsers.add_parser("task-done", help = "mark a task/subtask as completed")
+    parser_taskdone.add_argument("task_id", type = str, action = 'store', help = "id of the task")
     
-    parser_gettask = subparsers.add_parser("task-undo", help = "mark a task as to-do")
-    parser_gettask.add_argument("task_id", type = str, action = 'store', help = "id of the task")
+    parser_taskundo = subparsers.add_parser("task-undo", help = "mark a task/subtask as to-do")
+    parser_taskundo.add_argument("task_id", type = str, action = 'store', help = "id of the task")
+    
+    parser_createlist = subparsers.add_parser("create-list", help = "create a list with title")
+    parser_createlist.add_argument("title", type = str, action = 'store', help = "title of the list")
+
+    parser_updatelist = subparsers.add_parser("update-list", help = "update a list")
+    parser_updatelist.add_argument("list_id", type = str, action = 'store', help = "id of the list")
+    parser_updatelist.add_argument("title", type = str, action = 'store', help = "title of the list")
+    
+    parser_deletelist = subparsers.add_parser("delete-list", help = "delete a list")
+    parser_deletelist.add_argument("list_id", type = str, action = 'store', help = "id of the list")
 
     return parser.parse_args()
 
@@ -210,6 +220,22 @@ def task_undo(api, args):
             [ "Completed", task['completed_at'] ],
         ]
         print_table(lines, args.column)
+
+
+
+def create_list(api, args):
+    pass
+
+
+
+def update_list(api, args):
+    pass
+
+
+
+def delete_list(api, args):
+    pass
+
 
 
 
