@@ -264,7 +264,7 @@ class WunderlistAPI():
 
 
     # Delete a list/task as per its list_id/task_id
-    def remove(self, item_id):
+    def delete(self, item_id):
         return self.wunderlist_api_call_delete(self.apiurl_root + item_id)
 
 
@@ -306,8 +306,8 @@ if __name__ == '__main__':
     print "create_task", json.dumps(api.create_task("test task mamam - tomorrow STAR", None, "ABjMAAbzjGQ", None, "true", "2014-07-16"), indent = 4)
     print "update_list", json.dumps(api.update_list("ABjMAAbzjGQ", "Test list 3"), indent = 4)
     print "update_task", json.dumps(api.update_task("ACjMACe43cs", "HAVE FUN!!! bianji", None, "ABjMAAbzjGQ", None, "false", "2014-07-26"), indent = 4)
-    print "remove list", json.dumps(api.remove("ABjMAAbzi1U"), indent = 4)
-    print "remove task", json.dumps(api.remove("ACjMACe43ac"), indent = 4)
+    print "delete list", json.dumps(api.delete("ABjMAAbzi1U"), indent = 4)
+    print "delete task", json.dumps(api.delete("ACjMACe43ac"), indent = 4)
     print "create_task", json.dumps(api.create_task(title = "New task assigned to Wei Ye", list_id = "ABjMAAbqDys", starred = "true", assignee_id = "AAAAAACSxWE"), indent = 4)
     print "update_task", json.dumps(api.update_task(task_id = "ACjMACe6j8w", title = "New task assigned to dd", list_id = "ABjMAAbqDys", starred = "false", assignee_id = "AAAAAACS0lE"), indent = 4)
     print "check_task", json.dumps(api.check_task("ACjMACe6j8w"), indent = 4)

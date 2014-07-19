@@ -321,7 +321,7 @@ def update_subtask(api, args):
 
 
 def delete(api, args):
-    item = api.remove(args.item_id)
+    item = api.delete(args.item_id)
     print json.dumps(item, indent = 4)
 
 
