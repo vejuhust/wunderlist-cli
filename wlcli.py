@@ -3,9 +3,10 @@
 
 import argparse
 import json
+from datetime import datetime
+from operator import itemgetter
 from WunderlistAPI import WunderlistAPI
 from auth import email, password
-from datetime import datetime
 
 
 def parsers():
@@ -26,6 +27,9 @@ def parsers():
 
     parser_gettask = subparsers.add_parser("get-task", help = "get info of task in a list")
     parser_gettask.add_argument("list_id", type = str, action = 'store', help = "id of the list")
+    
+    parser_gettask = subparsers.add_parser("get-subtask", help = "get info of subtasks of a task")
+    parser_gettask.add_argument("task_id", type = str, action = 'store', help = "id of the task")
     
     parser_gettask = subparsers.add_parser("task-info", help = "get detail info of a task")
     parser_gettask.add_argument("task_id", type = str, action = 'store', help = "id of the task")
@@ -136,6 +140,35 @@ def get_task(api, args):
                 if not task['parent_id'] and task['completed_at']:
                     lines += [ [ task['id'], task['title'] ] ]
         print_table(lines, args.column, mark, title = [ "Task ID", "Title" ])
+
+
+
+def get_subtask(api, args):
+    task = api.get_task(args.task_id)
+    parent_id = task['id']
+    list_id = task['list_id']
+    tasks = api.get_tasks_by_list(list_id, True)
+    subtasks = [ task for task in tasks if task['parent_id'] == parent_id ]
+    if args.verbose:
+        filtered = []
+        if args.display_done:
+            filtered = subtasks
+        else:
+            filtered = [ task for task in subtasks if not task['completed_at'] ]
+        print json.dumps(filtered, indent = 4)
+    else:
+        mark = "MARKBREAKLINESUBTASK"
+        lines = []
+        for task in subtasks:
+            if not task['completed_at']:
+                lines += [ [ task['id'], task['title'] ] ]
+        if args.display_done:
+            lines += [ [mark] ]
+            tasks = sorted(subtasks, key = itemgetter('position'), reverse = False)
+            for task in tasks:
+                if task['completed_at']:
+                    lines += [ [ task['id'], task['title'] ] ]
+        print_table(lines, args.column, mark, title = [ "Sub-task ID", "Title" ])
 
 
 
