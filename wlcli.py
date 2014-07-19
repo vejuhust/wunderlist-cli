@@ -19,17 +19,17 @@ def parsers():
 
     subparsers = parser.add_subparsers(help = "functions currently supported", dest = 'subparser_name')
 
-    parser_getprofile = subparsers.add_parser("get-profile", help = "get user's profile")
+    parser_readprofile = subparsers.add_parser("read-profile", help = "get user's profile")
     
-    parser_getcontact = subparsers.add_parser("get-contact", help = "get user's contacts")
+    parser_readcontact = subparsers.add_parser("read-contact", help = "get user's contacts")
 
-    parser_getlist = subparsers.add_parser("get-list", help = "get info of all lists")
+    parser_readlist = subparsers.add_parser("read-list", help = "get info of all lists")
 
-    parser_gettask = subparsers.add_parser("get-task", help = "get info of task in a list")
-    parser_gettask.add_argument("list_id", type = str, action = 'store', help = "id of the list")
+    parser_readtask = subparsers.add_parser("read-task", help = "get info of task in a list")
+    parser_readtask.add_argument("list_id", type = str, action = 'store', help = "id of the list")
     
-    parser_getsubtask = subparsers.add_parser("get-subtask", help = "get info of subtasks of a task")
-    parser_getsubtask.add_argument("task_id", type = str, action = 'store', help = "id of the task")
+    parser_readsubtask = subparsers.add_parser("read-subtask", help = "get info of subtasks of a task")
+    parser_readsubtask.add_argument("task_id", type = str, action = 'store', help = "id of the task")
     
     parser_taskinfo = subparsers.add_parser("task-info", help = "get detail info of a task")
     parser_taskinfo.add_argument("task_id", type = str, action = 'store', help = "id of the task")
@@ -93,8 +93,8 @@ def print_table(lines, column_length, mark = "MARKBREAKLINE", title = [ "Key", "
 
 
 
-def get_profile(api, args):
-    profile = api.get_profile()
+def read_profile(api, args):
+    profile = api.read_profile()
     if args.verbose:
         print json.dumps(profile, indent = 4)
     else:
@@ -110,8 +110,8 @@ def get_profile(api, args):
 
 
 
-def get_contact(api, args):
-    contacts = api.get_contacts()
+def read_contact(api, args):
+    contacts = api.read_contacts()
     if args.verbose:
         print json.dumps(contacts, indent = 4)
     else:
@@ -130,8 +130,8 @@ def get_contact(api, args):
 
 
 
-def get_list(api, args):
-    lists = api.get_lists(True)
+def read_list(api, args):
+    lists = api.read_lists(True)
     if args.verbose:
         print json.dumps(lists, indent = 4)
     else:
@@ -140,8 +140,8 @@ def get_list(api, args):
 
 
 
-def get_task(api, args):
-    tasks = api.get_tasks_by_list(args.list_id, True)
+def read_task(api, args):
+    tasks = api.read_tasks_by_list(args.list_id, True)
     if args.verbose:
         if args.display_done:
             filtered = [ task for task in tasks if not task['parent_id'] and task['completed_at'] ]
@@ -159,11 +159,11 @@ def get_task(api, args):
 
 
 
-def get_subtask(api, args):
-    task = api.get_task(args.task_id)
+def read_subtask(api, args):
+    task = api.read_task(args.task_id)
     parent_id = task['id']
     list_id = task['list_id']
-    tasks = api.get_tasks_by_list(list_id, True)
+    tasks = api.read_tasks_by_list(list_id, True)
     subtasks = [ task for task in tasks if task['parent_id'] == parent_id ]
     if args.verbose:
         filtered = []
@@ -184,7 +184,7 @@ def get_subtask(api, args):
 
 
 def task_info(api, args):
-    task = api.get_task(args.task_id)
+    task = api.read_task(args.task_id)
     if args.verbose:
         print json.dumps(task, indent = 4)
     else:

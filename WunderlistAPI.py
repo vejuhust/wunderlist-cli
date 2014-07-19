@@ -153,75 +153,75 @@ class WunderlistAPI():
                     self.is_login = True
 
 
-    # Get user profile via https://api.wunderlist.com/me
-    def get_profile(self):
+    # Read user profile via https://api.wunderlist.com/me
+    def read_profile(self):
         return self.wunderlist_api_call_get(self.apiurl_profile)
 
 
-    # Get user settings via https://api.wunderlist.com/me/settings
-    def get_settings(self):
+    # Read user settings via https://api.wunderlist.com/me/settings
+    def read_settings(self):
         return self.wunderlist_api_call_get(self.apiurl_settings)
 
 
-    # Get user contacts via https://api.wunderlist.com/me/contacts
-    def get_contacts(self):
+    # Read user contacts via https://api.wunderlist.com/me/contacts
+    def read_contacts(self):
         return self.wunderlist_api_call_get(self.apiurl_contacts)
 
 
-    # Get user's services via https://api.wunderlist.com/me/services
-    def get_services(self):
+    # Read user's services via https://api.wunderlist.com/me/services
+    def read_services(self):
         return self.wunderlist_api_call_get(self.apiurl_services)
 
 
-    # Get user's quota via https://api.wunderlist.com/me/quota
-    def get_quota(self):
+    # Read user's quota via https://api.wunderlist.com/me/quota
+    def read_quota(self):
         return self.wunderlist_api_call_get(self.apiurl_quota)
 
 
-    # Get user's events via https://api.wunderlist.com/me/events
-    def get_events(self):
+    # Read user's events via https://api.wunderlist.com/me/events
+    def read_events(self):
         return self.wunderlist_api_call_get(self.apiurl_events)
 
 
-    # Get user's sharing via https://api.wunderlist.com/me/shares
-    def get_shares(self):
+    # Read user's sharing via https://api.wunderlist.com/me/shares
+    def read_shares(self):
         return self.wunderlist_api_call_get(self.apiurl_shares)
 
 
-    # Get user's reminders sorted by date via https://api.wunderlist.com/me/reminders
-    def get_reminders(self, sort = False):
+    # Read user's reminders sorted by date via https://api.wunderlist.com/me/reminders
+    def read_reminders(self, sort = False):
         tasks = self.wunderlist_api_call_get(self.apiurl_reminders)
         if sort:
             tasks = sorted(tasks, key = lambda item : datetime.strptime(item['date'], '%Y-%m-%dT%H:%M:%SZ'), reverse = True)
         return tasks
 
 
-    # Get user's all lists sorted by position via https://api.wunderlist.com/me/lists
-    def get_lists(self, sort = False):
+    # Read user's all lists sorted by position via https://api.wunderlist.com/me/lists
+    def read_lists(self, sort = False):
         lists = self.wunderlist_api_call_get(self.apiurl_lists)
         if sort:
             lists = sorted(lists, key = itemgetter('position'), reverse = False)
         return lists
 
 
-    # Get user's all tasks sorted by list_id, completed, position via https://api.wunderlist.com/me/tasks
-    def get_tasks(self, sort = False):
+    # Read user's all tasks sorted by list_id, completed, position via https://api.wunderlist.com/me/tasks
+    def read_tasks(self, sort = False):
         tasks = self.wunderlist_api_call_get(self.apiurl_tasks)
         if sort:
             tasks = sorted(tasks, key = itemgetter('list_id', 'updated_at', 'position'), reverse = False)
         return tasks
 
 
-    # Get user's all the tasks in a list via https://api.wunderlist.com/me/tasks
-    def get_tasks_by_list(self, list_id, sort = False):
+    # Read user's all the tasks in a list via https://api.wunderlist.com/me/tasks
+    def read_tasks_by_list(self, list_id, sort = False):
         tasks = self.wunderlist_api_call_get(self.apiurl_tasks, { 'list_id' : list_id })
         if sort:
             tasks = sorted(tasks, key = itemgetter('position'), reverse = False)
         return tasks
 
 
-    # Get user's all the tasks recently updated via https://api.wunderlist.com/me/tasks
-    def get_tasks_recently(self, hours = 0, minutes = 0, seconds = 0, sort = False):
+    # Read user's all the tasks recently updated via https://api.wunderlist.com/me/tasks
+    def read_tasks_recently(self, hours = 0, minutes = 0, seconds = 0, sort = False):
         since_date = datetime.utcnow() - timedelta(hours = hours, minutes = minutes, seconds = seconds)
         since_stamp = timegm(since_date.timetuple())
         tasks = self.wunderlist_api_call_get(self.apiurl_tasks, { 'since' : since_stamp })
@@ -278,8 +278,8 @@ class WunderlistAPI():
         return self.wunderlist_api_call_put(self.apiurl_root + task_id, { 'completed_at' : '' })
 
 
-    # Get details of a task as per its task_id
-    def get_task(self, task_id):
+    # Read details of a task as per its task_id
+    def read_task(self, task_id):
         return self.wunderlist_api_call_get(self.apiurl_root + task_id)
 
 
@@ -289,18 +289,18 @@ if __name__ == '__main__':
     print api.is_login, api.token
     api.login()
     print api.is_login, api.token
-    print "get_profile", json.dumps(api.get_profile(), indent = 4)
-    print "get_settings", json.dumps(api.get_settings(), indent = 4)
-    print "get_contacts", json.dumps(api.get_contacts(), indent = 4)
-    print "get_services", json.dumps(api.get_services(), indent = 4)
-    print "get_quota", json.dumps(api.get_quota(), indent = 4)
-    print "get_events", json.dumps(api.get_events(), indent = 4)
-    print "get_shares", json.dumps(api.get_shares(), indent = 4)
-    print "get_reminders", json.dumps(api.get_reminders(True), indent = 4)
-    print "get_lists", json.dumps(api.get_lists(True), indent = 4)
-    print "get_tasks", json.dumps(api.get_tasks(True), indent = 4)
-    print "get_tasks_by_list", json.dumps(api.get_tasks_by_list("ABjMAAbobFc", True), indent = 4)
-    print "get_tasks_recently", json.dumps(api.get_tasks_recently(minutes = 30, sort = True), indent = 4)
+    print "read_profile", json.dumps(api.read_profile(), indent = 4)
+    print "read_settings", json.dumps(api.read_settings(), indent = 4)
+    print "read_contacts", json.dumps(api.read_contacts(), indent = 4)
+    print "read_services", json.dumps(api.read_services(), indent = 4)
+    print "read_quota", json.dumps(api.read_quota(), indent = 4)
+    print "read_events", json.dumps(api.read_events(), indent = 4)
+    print "read_shares", json.dumps(api.read_shares(), indent = 4)
+    print "read_reminders", json.dumps(api.read_reminders(True), indent = 4)
+    print "read_lists", json.dumps(api.read_lists(True), indent = 4)
+    print "read_tasks", json.dumps(api.read_tasks(True), indent = 4)
+    print "read_tasks_by_list", json.dumps(api.read_tasks_by_list("ABjMAAbobFc", True), indent = 4)
+    print "read_tasks_recently", json.dumps(api.read_tasks_recently(minutes = 30, sort = True), indent = 4)
     exit(0)
     print "create_list", json.dumps(api.create_list("Test List Again & Again"), indent = 4)
     print "create_task", json.dumps(api.create_task("test task mamam - tomorrow STAR", None, "ABjMAAbzjGQ", None, "true", "2014-07-16"), indent = 4)
@@ -312,5 +312,5 @@ if __name__ == '__main__':
     print "modify_task", json.dumps(api.modify_task(task_id = "ACjMACe6j8w", title = "New task assigned to dd", list_id = "ABjMAAbqDys", starred = "false", assignee_id = "AAAAAACS0lE"), indent = 4)
     print "check_task", json.dumps(api.check_task("ACjMACe6j8w"), indent = 4)
     print "uncheck_task", json.dumps(api.uncheck_task("ACjMACe6j8w"), indent = 4)
-    print "get_task", json.dumps(api.get_task("ACjMACfiwS8"), indent = 4)
+    print "read_task", json.dumps(api.read_task("ACjMACfiwS8"), indent = 4)
 
