@@ -246,15 +246,15 @@ class WunderlistAPI():
         return self.wunderlist_api_call_post(self.apiurl_tasks, task_info)
 
 
-    # Modify title of a list
-    def modify_list(self, list_id, title):
+    # Update title of a list
+    def update_list(self, list_id, title):
         return self.wunderlist_api_call_put(self.apiurl_root + list_id, { 'title' : title })
 
 
-    # Modify title/note/list_id/parent_id/starred/due_date/assignee_id of a task, now parent_id can't be changed
-    def modify_task(self, task_id, title = None, note = None, list_id = None, parent_id = None, starred = None, due_date = None, assignee_id = None):
+    # Update title/note/list_id/parent_id/starred/due_date/assignee_id of a task, now parent_id can't be changed
+    def update_task(self, task_id, title = None, note = None, list_id = None, parent_id = None, starred = None, due_date = None, assignee_id = None):
         task_info = {}
-        params = getargspec(self.modify_task).args
+        params = getargspec(self.update_task).args
         for key in params[2:]:
             value = eval(key)
             if value:
@@ -304,12 +304,12 @@ if __name__ == '__main__':
     exit(0)
     print "create_list", json.dumps(api.create_list("Test List Again & Again"), indent = 4)
     print "create_task", json.dumps(api.create_task("test task mamam - tomorrow STAR", None, "ABjMAAbzjGQ", None, "true", "2014-07-16"), indent = 4)
-    print "modify_list", json.dumps(api.modify_list("ABjMAAbzjGQ", "Test list 3"), indent = 4)
-    print "modify_task", json.dumps(api.modify_task("ACjMACe43cs", "HAVE FUN!!! bianji", None, "ABjMAAbzjGQ", None, "false", "2014-07-26"), indent = 4)
+    print "update_list", json.dumps(api.update_list("ABjMAAbzjGQ", "Test list 3"), indent = 4)
+    print "update_task", json.dumps(api.update_task("ACjMACe43cs", "HAVE FUN!!! bianji", None, "ABjMAAbzjGQ", None, "false", "2014-07-26"), indent = 4)
     print "remove list", json.dumps(api.remove("ABjMAAbzi1U"), indent = 4)
     print "remove task", json.dumps(api.remove("ACjMACe43ac"), indent = 4)
     print "create_task", json.dumps(api.create_task(title = "New task assigned to Wei Ye", list_id = "ABjMAAbqDys", starred = "true", assignee_id = "AAAAAACSxWE"), indent = 4)
-    print "modify_task", json.dumps(api.modify_task(task_id = "ACjMACe6j8w", title = "New task assigned to dd", list_id = "ABjMAAbqDys", starred = "false", assignee_id = "AAAAAACS0lE"), indent = 4)
+    print "update_task", json.dumps(api.update_task(task_id = "ACjMACe6j8w", title = "New task assigned to dd", list_id = "ABjMAAbqDys", starred = "false", assignee_id = "AAAAAACS0lE"), indent = 4)
     print "check_task", json.dumps(api.check_task("ACjMACe6j8w"), indent = 4)
     print "uncheck_task", json.dumps(api.uncheck_task("ACjMACe6j8w"), indent = 4)
     print "read_task", json.dumps(api.read_task("ACjMACfiwS8"), indent = 4)

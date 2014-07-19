@@ -286,7 +286,7 @@ def create_subtask(api, args):
 
 
 def update_list(api, args):
-    list = api.modify_list(args.list_id, args.title)
+    list = api.update_list(args.list_id, args.title)
     if args.verbose:
         print json.dumps(list, indent = 4)
     else:
@@ -301,7 +301,7 @@ def update_list(api, args):
 
 
 def update_task(api, args):
-    task = api.modify_task(args.task_id, args.title)
+    task = api.update_task(args.task_id, args.title)
     if args.verbose:
         print json.dumps(task, indent = 4)
     else:
