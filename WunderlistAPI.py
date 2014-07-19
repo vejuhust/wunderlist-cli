@@ -288,6 +288,7 @@ class WunderlistAPI():
 if __name__ == '__main__':
     api = WunderlistAPI(email, password)
     print api.is_login, api.token
+
     api.login()
     print api.is_login, api.token
     print "read_profile", json.dumps(api.read_profile(), indent = 4)
@@ -301,17 +302,41 @@ if __name__ == '__main__':
     print "read_lists", json.dumps(api.read_lists(True), indent = 4)
     print "read_tasks", json.dumps(api.read_tasks(True), indent = 4)
     print "read_tasks_by_list", json.dumps(api.read_tasks_by_list("ABjMAAbobFc", True), indent = 4)
-    print "read_tasks_recently", json.dumps(api.read_tasks_recently(minutes = 30, sort = True), indent = 4)
-    exit(0)
-    print "create_list", json.dumps(api.create_list("Test List Again & Again"), indent = 4)
-    print "create_task", json.dumps(api.create_task("test task mamam - tomorrow STAR", None, "ABjMAAbzjGQ", None, "true", "2014-07-16"), indent = 4)
-    print "update_list", json.dumps(api.update_list("ABjMAAbzjGQ", "Test list 3"), indent = 4)
-    print "update_task", json.dumps(api.update_task("ACjMACe43cs", "HAVE FUN!!! bianji", None, "ABjMAAbzjGQ", None, "false", "2014-07-26"), indent = 4)
-    print "delete list", json.dumps(api.delete("ABjMAAbzi1U"), indent = 4)
-    print "delete task", json.dumps(api.delete("ACjMACe43ac"), indent = 4)
-    print "create_task", json.dumps(api.create_task(title = "New task assigned to Wei Ye", list_id = "ABjMAAbqDys", starred = "true", assignee_id = "AAAAAACSxWE"), indent = 4)
-    print "update_task", json.dumps(api.update_task(task_id = "ACjMACe6j8w", title = "New task assigned to dd", list_id = "ABjMAAbqDys", starred = "false", assignee_id = "AAAAAACS0lE"), indent = 4)
-    print "check_task", json.dumps(api.check_task("ACjMACe6j8w"), indent = 4)
-    print "uncheck_task", json.dumps(api.uncheck_task("ACjMACe6j8w"), indent = 4)
-    print "read_task", json.dumps(api.read_task("ACjMACfiwS8"), indent = 4)
+    print "read_tasks_recently", json.dumps(api.read_tasks_recently(minutes = 30, sort = False), indent = 4)
+    print "read_tasks_recently sorted", json.dumps(api.read_tasks_recently(minutes = 30, sort = True), indent = 4)
 
+    list = api.create_list(title = "Test List Again & Again")
+    print "create_list", json.dumps(list, indent = 4)
+
+    task = api.create_task(title = "test task", note = time.strftime('%a, %d %b %Y %H:%M:%S %Z', time.localtime()), list_id = list['id'])
+    print "create_task", json.dumps(task, indent = 4)
+    
+    task2 = api.create_task(title = "TEST task - second one", note = "Again at " + time.strftime('%a, %d %b %Y %H:%M:%S %Z', time.localtime()), list_id = list['id'])
+    print "create_task 2", json.dumps(task2, indent = 4)
+    
+    subtask = api.create_task(title = "sub-task test", parent_id = task['id'])
+    print "create_task sub1", json.dumps(subtask, indent = 4)
+    
+    subtask2 = api.create_task(title = "Two - sub-task test 1", parent_id = task2['id'])
+    print "create_task sub2", json.dumps(subtask2, indent = 4)
+    
+    subtask3 = api.create_task(title = "two - sub-task test 2nd", parent_id = task2['id'])
+    print "create_task sub3", json.dumps(subtask3, indent = 4)
+    
+    print "update_list", json.dumps(api.update_list(list_id = list['id'], title = "Just Test List" + time.strftime(' %b %d %Y', time.localtime())), indent = 4)
+    print "update_task", json.dumps(api.update_task(task_id = task['id'], title = "HAVE FUN!!! neo4j", starred = "true"), indent = 4)
+    print "update_task 2", json.dumps(api.update_task(task_id = task2['id'], title = "Show 2 sub-tasks, one done, the other isn't ", starred = "false", due_date = "2014-07-22"), indent = 4)
+    print "update_task sub1", json.dumps(api.update_task(task_id = subtask['id'], title = "subtask one @" + time.strftime('%Z %d %b %Y %H:%M:%S', time.localtime())), indent = 4)
+
+    print "check_task", json.dumps(api.check_task(task['id']), indent = 4)
+    print "check_task 2", json.dumps(api.check_task(task2['id']), indent = 4)
+    print "uncheck_task 2", json.dumps(api.uncheck_task(task2['id']), indent = 4)
+    print "check_task sub2", json.dumps(api.check_task(subtask2['id']), indent = 4)
+    print "uncheck_task sub2", json.dumps(api.uncheck_task(subtask2['id']), indent = 4)
+    print "check_task sub3", json.dumps(api.check_task(subtask3['id']), indent = 4)
+
+    print "delete subtask", json.dumps(api.delete(subtask['id']), indent = 4)
+    print "delete task", json.dumps(api.delete(task['id']), indent = 4)
+    print "delete list", json.dumps(api.delete(list['id']), indent = 4)
+
+    print "read_tasks_recently clean-up", json.dumps(api.read_tasks_recently(minutes = 5, sort = False), indent = 4)
