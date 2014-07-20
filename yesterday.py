@@ -34,9 +34,9 @@ def print_task(task, child_tasks, list_dict):
     note = task['note']
     list = list_dict[task['list_id']]
     if is_done:
-        output_string += "* `%s` _%s_ - %s     \n" % (datestr, list, title)
+        output_string += u"* ✔︎ `%s` _%s_ - %s     \n" % (datestr, list, title)
     else:
-        output_string += "* _%s_ - %s     \n" % (list, title)
+        output_string += u"* Ø _%s_ - %s     \n" % (list, title)
     for subtask in child_tasks:
         if subtask['parent_id'] == task['id']:
             print_subtask(subtask)
