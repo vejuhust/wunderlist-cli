@@ -21,7 +21,7 @@ def print_subtask(task):
     global output_string
     # Extract info needed
     is_done =  True if task['completed_at'] else False
-    date = datetime.strptime(task['completed_at'], '%Y-%m-%dT%H:%M:%SZ') + timedelta(hours = 8)
+    date = datetime.strptime(task['updated_at'], '%Y-%m-%dT%H:%M:%SZ') + timedelta(hours = 8)
     datestr = date.strftime('%H:%M %b %d')
     title = task['title']
     # Output basic info of the subtask
@@ -32,7 +32,7 @@ def print_subtask(task):
 
 
 
-def print_task(task, child_tasks, list_dict):
+def print_task(task, child_tasks, sibling_tasks, list_dict):
     global output_string
     # Extract info needed
     is_done =  True if task['completed_at'] else False
@@ -48,6 +48,10 @@ def print_task(task, child_tasks, list_dict):
         output_string += u"* Ø _%s_ - %s %s" % (list, title, trailing_space)
     # Output completed subtasks of the task
     for subtask in child_tasks:
+        if subtask['parent_id'] == task['id']:
+            print_subtask(subtask)
+    # Output uncompleted subtasks of the task
+    for subtask in sibling_tasks:
         if subtask['parent_id'] == task['id']:
             print_subtask(subtask)
     # Output note appending to the task
@@ -90,7 +94,7 @@ if __name__ == '__main__':
     child_tasks = [ task for task in tasks if task['parent_id'] and task['completed_at'] and check_timerange(task['completed_at'], last_hours) ]
 
     # Figure out tasks contain these completed subtasks
-    parent_set_plus = set(task['parent_id'] for task in child_tasks)
+    parent_set_plus = set( task['parent_id'] for task in child_tasks )
 
     # Add listed tasks of listed completed subtasks even if it's not completed
     plus_set = parent_set_plus - parent_set
@@ -102,9 +106,17 @@ if __name__ == '__main__':
     for task_id in load_set:
         parent_tasks.append(api.read_task_by_id(task_id = task_id))
 
+    # Figure out lists contains all the subtasks
+    list_set = set( task['list_id'] for task in child_tasks )
+    sibling_tasks = []
+    for list_id in list_set:
+        sibling_tasks += api.read_tasks_by_list(list_id)
+    sibling_tasks = [ task for task in sibling_tasks if task['parent_id'] and not task['completed_at'] ]
+
     # Sort the lists
     parent_tasks = sorted(parent_tasks, key = lambda item : datetime.strptime(item['updated_at'], '%Y-%m-%dT%H:%M:%SZ'), reverse = True)
     child_tasks = sorted(child_tasks, key = lambda item : datetime.strptime(item['updated_at'], '%Y-%m-%dT%H:%M:%SZ'), reverse = False)
+    sibling_tasks = sorted(sibling_tasks, key = itemgetter('position'), reverse = False)
 
     # Get all the lists
     lists = api.read_lists()
@@ -112,5 +124,5 @@ if __name__ == '__main__':
 
     # Output
     for task in parent_tasks:
-        print_task(task, child_tasks, list_dict)
+        print_task(task, child_tasks, sibling_tasks, list_dict)
     save_output()
