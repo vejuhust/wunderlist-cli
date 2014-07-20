@@ -116,7 +116,7 @@ if __name__ == '__main__':
     sibling_tasks = [ task for task in sibling_tasks if task['parent_id'] and not task['completed_at'] ]
 
     # Sort the lists
-    parent_tasks = sorted(parent_tasks, key = itemgetter('list_id', 'completed_at', 'updated_at'), reverse = True)
+    parent_tasks = sorted(parent_tasks, key = itemgetter('list_id', 'updated_at'), reverse = True)
     child_tasks = sorted(child_tasks, key = itemgetter('position'), reverse = False)
     sibling_tasks = sorted(sibling_tasks, key = itemgetter('position'), reverse = False)
 
