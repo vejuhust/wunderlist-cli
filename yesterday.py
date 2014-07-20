@@ -15,6 +15,8 @@ output_string = ""
 trailing_space = " " * 4 + "\n"
 blockmark = "\n" + "`" * 3 + "\n"
 blockquote = trailing_space + "> "
+symbol_done = u"✔︎"
+symbol_todo = u"Ø"
 
 
 def print_subtask(task):
@@ -26,9 +28,9 @@ def print_subtask(task):
     title = task['title']
     # Output basic info of the subtask
     if is_done:
-        output_string += u"  * ✔︎ `%s` %s %s" % (datestr, title, trailing_space)
+        output_string += "  * %s `%s` %s %s" % (symbol_done, datestr, title, trailing_space)
     else:
-        output_string += u"  * Ø %s %s" % (title, trailing_space)
+        output_string += "  * %s %s %s" % (symbol_todo, title, trailing_space)
 
 
 
@@ -43,9 +45,9 @@ def print_task(task, child_tasks, sibling_tasks, list_dict):
     list = list_dict[task['list_id']]
     # Output basic info of the task
     if is_done:
-        output_string += u"* ✔︎ `%s` _%s_ - %s %s" % (datestr, list, title, trailing_space)
+        output_string += "* %s `%s` _%s_ - %s %s" % (symbol_done, datestr, list, title, trailing_space)
     else:
-        output_string += u"* Ø _%s_ - %s %s" % (list, title, trailing_space)
+        output_string += "* %s _%s_ - %s %s" % (symbol_todo, list, title, trailing_space)
     # Output completed subtasks of the task
     for subtask in child_tasks:
         if subtask['parent_id'] == task['id']:
