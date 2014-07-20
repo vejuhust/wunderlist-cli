@@ -25,17 +25,18 @@ def print_subtask(task):
         output_string += "  * %s     \n" % (title)
 
 
-def print_task(task, child_tasks):
+def print_task(task, child_tasks, list_dict):
     global output_string
     is_done =  True if task['completed_at'] else False
     date = datetime.strptime(task['updated_at'], '%Y-%m-%dT%H:%M:%SZ') + timedelta(hours = 8)
     datestr = date.strftime('%H:%M %b %d')
     title = task['title']
     note = task['note']
+    list = list_dict[task['list_id']]
     if is_done:
-        output_string += "* `%s` %s     \n" % (datestr, title)
+        output_string += "* `%s` _%s_ - %s     \n" % (datestr, list, title)
     else:
-        output_string += "* %s     \n" % (title)
+        output_string += "* _%s_ - %s     \n" % (list, title)
     for subtask in child_tasks:
         if subtask['parent_id'] == task['id']:
             print_subtask(subtask)
@@ -89,7 +90,11 @@ if __name__ == '__main__':
     parent_tasks = sorted(parent_tasks, key = lambda item : datetime.strptime(item['updated_at'], '%Y-%m-%dT%H:%M:%SZ'), reverse = True)
     child_tasks = sorted(child_tasks, key = lambda item : datetime.strptime(item['updated_at'], '%Y-%m-%dT%H:%M:%SZ'), reverse = False)
 
+    # Get all the lists
+    lists = api.read_lists()
+    list_dict = { list['id'] : list['title'] for list in lists }
+
     # Output
     for task in parent_tasks:
-        print_task(task, child_tasks)
+        print_task(task, child_tasks, list_dict)
     save_output()
