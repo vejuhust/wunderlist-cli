@@ -52,7 +52,7 @@ def print_task(task, child_tasks, list_dict):
             print_subtask(subtask)
     # Output note appending to the task
     if note:
-        note = "\n" + note.rstrip()
+        note = "\n" + note.replace("\r\n", "\n").rstrip()
         output_string += note.replace("\n", blockquote) + "\n" * 2
 
 
