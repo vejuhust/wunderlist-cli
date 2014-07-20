@@ -12,21 +12,24 @@ from auth import email, password
 
 
 output_string = ""
+trailing_space = " " * 5
 
 def print_subtask(task):
     global output_string
+    global trailing_space
     is_done =  True if task['completed_at'] else False
     date = datetime.strptime(task['completed_at'], '%Y-%m-%dT%H:%M:%SZ') + timedelta(hours = 8)
     datestr = date.strftime('%H:%M %b %d')
     title = task['title']
     if is_done:
-        output_string += "  * `%s` %s     \n" % (datestr, title)
+        output_string += u"  * ✔︎ `%s` %s %s\n" % (datestr, title, trailing_space)
     else:
-        output_string += "  * %s     \n" % (title)
+        output_string += u"  * Ø %s %s\n" % (title, trailing_space)
 
 
 def print_task(task, child_tasks, list_dict):
     global output_string
+    global trailing_space
     is_done =  True if task['completed_at'] else False
     date = datetime.strptime(task['updated_at'], '%Y-%m-%dT%H:%M:%SZ') + timedelta(hours = 8)
     datestr = date.strftime('%H:%M %b %d')
@@ -34,9 +37,9 @@ def print_task(task, child_tasks, list_dict):
     note = task['note']
     list = list_dict[task['list_id']]
     if is_done:
-        output_string += u"* ✔︎ `%s` _%s_ - %s     \n" % (datestr, list, title)
+        output_string += u"* ✔︎ `%s` _%s_ - %s %s\n" % (datestr, list, title, trailing_space)
     else:
-        output_string += u"* Ø _%s_ - %s     \n" % (list, title)
+        output_string += u"* Ø _%s_ - %s %s\n" % (list, title, trailing_space)
     for subtask in child_tasks:
         if subtask['parent_id'] == task['id']:
             print_subtask(subtask)
