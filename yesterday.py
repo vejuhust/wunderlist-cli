@@ -116,7 +116,7 @@ if __name__ == '__main__':
     sibling_tasks = [ task for task in sibling_tasks if task['parent_id'] and not task['completed_at'] ]
 
     # Sort the lists
-    parent_tasks = sorted(parent_tasks, key = lambda item : datetime.strptime(item['updated_at'], '%Y-%m-%dT%H:%M:%SZ'), reverse = True)
+    parent_tasks = sorted(parent_tasks, key = itemgetter('list_id', 'completed_at', 'updated_at'), reverse = True)
     child_tasks = sorted(child_tasks, key = itemgetter('position'), reverse = False)
     sibling_tasks = sorted(sibling_tasks, key = itemgetter('position'), reverse = False)
 
@@ -128,3 +128,4 @@ if __name__ == '__main__':
     for task in parent_tasks:
         print_task(task, child_tasks, sibling_tasks, list_dict)
     save_output()
+
