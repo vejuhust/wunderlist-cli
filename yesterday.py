@@ -12,9 +12,9 @@ from auth import email, password
 
 
 output_string = ""
-trailing_space = " " * 5 + "\n"
+trailing_space = " " * 4 + "\n"
 blockmark = "\n" + "`" * 3 + "\n"
-
+blockquote = trailing_space + "> "
 
 
 def print_subtask(task):
@@ -52,7 +52,8 @@ def print_task(task, child_tasks, list_dict):
             print_subtask(subtask)
     # Output note appending to the task
     if note:
-        output_string += blockmark + note.rstrip() + blockmark
+        note = "\n" + note.rstrip()
+        output_string += note.replace("\n", blockquote) + "\n" * 2
 
 
 
