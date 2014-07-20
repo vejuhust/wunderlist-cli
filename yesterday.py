@@ -12,37 +12,48 @@ from auth import email, password
 
 
 output_string = ""
-trailing_space = " " * 5
+trailing_space = " " * 5 + "\n"
+blockmark = "\n" + "`" * 3 + "\n"
+
+
 
 def print_subtask(task):
     global output_string
-    global trailing_space
+    # Extract info needed
     is_done =  True if task['completed_at'] else False
     date = datetime.strptime(task['completed_at'], '%Y-%m-%dT%H:%M:%SZ') + timedelta(hours = 8)
     datestr = date.strftime('%H:%M %b %d')
     title = task['title']
+    # Output basic info of the subtask
     if is_done:
-        output_string += u"  * ✔︎ `%s` %s %s\n" % (datestr, title, trailing_space)
+        output_string += u"  * ✔︎ `%s` %s %s" % (datestr, title, trailing_space)
     else:
-        output_string += u"  * Ø %s %s\n" % (title, trailing_space)
+        output_string += u"  * Ø %s %s" % (title, trailing_space)
+
 
 
 def print_task(task, child_tasks, list_dict):
     global output_string
-    global trailing_space
+    # Extract info needed
     is_done =  True if task['completed_at'] else False
     date = datetime.strptime(task['updated_at'], '%Y-%m-%dT%H:%M:%SZ') + timedelta(hours = 8)
     datestr = date.strftime('%H:%M %b %d')
     title = task['title']
     note = task['note']
     list = list_dict[task['list_id']]
+    # Output basic info of the task
     if is_done:
-        output_string += u"* ✔︎ `%s` _%s_ - %s %s\n" % (datestr, list, title, trailing_space)
+        output_string += u"* ✔︎ `%s` _%s_ - %s %s" % (datestr, list, title, trailing_space)
     else:
-        output_string += u"* Ø _%s_ - %s %s\n" % (list, title, trailing_space)
+        output_string += u"* Ø _%s_ - %s %s" % (list, title, trailing_space)
+    # Output completed subtasks of the task
     for subtask in child_tasks:
         if subtask['parent_id'] == task['id']:
             print_subtask(subtask)
+    # Output note appending to the task
+    if note:
+        output_string += blockmark + note.rstrip() + blockmark
+
 
 
 def save_output():
@@ -50,6 +61,7 @@ def save_output():
     file = open("content.md", "w")
     file.write(output_string.encode('utf-8'))
     file.close()
+
 
 
 def check_timerange(timestr, limit):
@@ -60,21 +72,21 @@ def check_timerange(timestr, limit):
 
 
 if __name__ == '__main__':
-    recent_hour = 24
+    last_hours = 24
 
     # Get all the task updated recently
     api = WunderlistAPI(email, password)
-    tasks = api.read_tasks_recently(hours = recent_hour)
+    tasks = api.read_tasks_recently(hours = last_hours)
 
     # Remove deleted tasks
     tasks = [ task for task in tasks if not task['deleted_at'] ]
 
     # Figure out listed completed tasks
-    parent_tasks = [ task for task in tasks if not task['parent_id'] and task['completed_at'] and check_timerange(task['completed_at'], recent_hour) ]
+    parent_tasks = [ task for task in tasks if not task['parent_id'] and task['completed_at'] and check_timerange(task['completed_at'], last_hours) ]
     parent_set = set(task['id'] for task in parent_tasks)
 
     # Figure out listed completed subtasks
-    child_tasks = [ task for task in tasks if task['parent_id'] and task['completed_at'] and check_timerange(task['completed_at'], recent_hour) ]
+    child_tasks = [ task for task in tasks if task['parent_id'] and task['completed_at'] and check_timerange(task['completed_at'], last_hours) ]
 
     # Figure out tasks contain these completed subtasks
     parent_set_plus = set(task['parent_id'] for task in child_tasks)
