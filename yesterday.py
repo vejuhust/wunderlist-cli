@@ -23,7 +23,7 @@ def print_subtask(task):
     global output_string
     # Extract info needed
     is_done =  True if task['completed_at'] else False
-    date = datetime.strptime(task['updated_at'], '%Y-%m-%dT%H:%M:%SZ') + timedelta(hours = 8)
+    date = datetime.strptime(task['completed_at'] if is_done else task['updated_at'], '%Y-%m-%dT%H:%M:%SZ') + timedelta(hours = 8)
     datestr = date.strftime('%H:%M %b %d')
     title = task['title']
     # Output basic info of the subtask
@@ -38,7 +38,7 @@ def print_task(task, child_tasks, sibling_tasks, list_dict):
     global output_string
     # Extract info needed
     is_done =  True if task['completed_at'] else False
-    date = datetime.strptime(task['updated_at'], '%Y-%m-%dT%H:%M:%SZ') + timedelta(hours = 8)
+    date = datetime.strptime(task['completed_at'] if is_done else task['updated_at'], '%Y-%m-%dT%H:%M:%SZ') + timedelta(hours = 8)
     datestr = date.strftime('%H:%M %b %d')
     title = task['title']
     note = task['note']
@@ -117,7 +117,7 @@ if __name__ == '__main__':
 
     # Sort the lists
     parent_tasks = sorted(parent_tasks, key = lambda item : datetime.strptime(item['updated_at'], '%Y-%m-%dT%H:%M:%SZ'), reverse = True)
-    child_tasks = sorted(child_tasks, key = lambda item : datetime.strptime(item['updated_at'], '%Y-%m-%dT%H:%M:%SZ'), reverse = False)
+    child_tasks = sorted(child_tasks, key = itemgetter('position'), reverse = False)
     sibling_tasks = sorted(sibling_tasks, key = itemgetter('position'), reverse = False)
 
     # Get all the lists
