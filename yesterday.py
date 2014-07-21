@@ -74,7 +74,7 @@ def save_output():
 
 def check_timerange(timestr, limit):
     min_date = datetime.utcnow() - timedelta(hours = limit)
-    aim_date = datetime.strptime(timestr, '%Y-%m-%dT%H:%M:%SZ') + timedelta(hours = 8)
+    aim_date = datetime.strptime(timestr, '%Y-%m-%dT%H:%M:%SZ')
     return aim_date >= min_date
 
 
