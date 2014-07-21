@@ -14,9 +14,10 @@ from auth import email, password
 output_string = ""
 trailing_space = " " * 4 + "\n"
 blockmark = "\n" + "`" * 3 + "\n"
-blockquote = "\n> "
-symbol_done = u"[x]"
-symbol_todo = u"[ ]"
+blockquote = trailing_space + "> "
+symbol_done = u"✔︎"
+symbol_todo = u"Ø"
+
 
 
 def print_subtask(task):
