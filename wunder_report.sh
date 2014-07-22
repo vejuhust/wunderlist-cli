@@ -6,6 +6,7 @@ create_directory () {
     fi
 }
 
+retry_times=3
 TZ='Asia/Shanghai'; export TZ
 yesterday="$(date '+%Y-%m-%d' -d '-1 day')"
 
@@ -20,7 +21,7 @@ file_html="$yesterday".html
 create_directory $dir_md
 create_directory $dir_html
 
-for ((INDEX=1;INDEX<=3;INDEX++));
+for ((INDEX=1;INDEX<="$retry_times";INDEX++));
 do
     python yesterday.py
     mv content.md content"$INDEX".md
@@ -29,7 +30,13 @@ done
 
 mv $(ls -S content*.md | head -1) "$file_md"
 
-grip --export "$file_md" "$file_html"
+for ((INDEX=1;INDEX<="$retry_times";INDEX++));
+do
+    grip --export "$file_md" converted"$INDEX".html
+    sleep 1
+done
+
+mv $(ls -S converted*.html | head -1) "$file_html"
 
 mail -a "Content-type: text/html; charset='utf-8'" -s "Daily Log of "$yesterday" @Inbox" vejuhust@gmail.com < "$file_html"
 
@@ -37,3 +44,4 @@ mv "$file_md" "$dir_md"
 mv "$file_html" "$dir_html"
 
 rm -vf content*.md
+rm -vf converted*.html
