@@ -6,6 +6,8 @@ create_directory () {
     fi
 }
 
+PATH=/usr/bin:/bin:/usr/local/bin
+
 retry_times=3
 TZ='Asia/Shanghai'; export TZ
 yesterday="$(date '+%Y-%m-%d' -d '-1 day')"
