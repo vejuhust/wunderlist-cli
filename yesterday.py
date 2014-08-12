@@ -118,8 +118,8 @@ if __name__ == '__main__':
 
     # Sort the lists
     parent_tasks = sorted(parent_tasks, key = itemgetter('list_id', 'updated_at'), reverse = True)
-    child_tasks = sorted(child_tasks, key = itemgetter('position'), reverse = False)
-    sibling_tasks = sorted(sibling_tasks, key = itemgetter('position'), reverse = False)
+    child_tasks = sorted(child_tasks, key = itemgetter('completed_at'), reverse = False)
+    sibling_tasks = sorted(sibling_tasks, key = itemgetter('updated_at'), reverse = False)
 
     # Get all the lists
     lists = api.read_lists()
